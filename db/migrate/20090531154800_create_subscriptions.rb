@@ -7,14 +7,9 @@ class CreateSubscriptions < ActiveRecord::Migration
       t.integer :responses_per_month
       t.timestamps
     end
-
-    create_table :subscriptions_questionnaires, :id => false do |t|
-      t.integer :subscription_id
-      t.integer :questionnaire_id
-    end
-
-    add_index :subscriptions_questionnaires, :subscription_id
-    add_index :subscriptions_questionnaires, :subscription_id
+    
+    add_column :questionnaires, :subscription_id, :integer
+    add_index :questionnaires, :subscription_id
 
     # populate initial owners
     # grandfather in unlimited entitlements for the existing owners
@@ -34,7 +29,7 @@ class CreateSubscriptions < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :subscriptions_questionnaires
+    remove_column :questionnaires, :subscription_id
     drop_table :subscriptions
   end
 end
