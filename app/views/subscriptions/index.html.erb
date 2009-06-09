@@ -1,0 +1,9 @@
+<h1>Subscriptions</h1>
+
+<div class="propertypage">
+	<h2>My Journey <%= @my_subscriptions.size == 1 ? "subscription" : "subscriptions" %></h2>
+	
+    <% @my_subscriptions.each do |subscr| -%>
+       <%= render :partial => "show", :locals => {:subscription => subscr} %>
+    <% end -%>
+</div>

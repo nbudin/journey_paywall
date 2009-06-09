@@ -12,7 +12,7 @@ namespace :journey_paywall do
 
   desc "remove the paywall tables and columns from the database"
   task :rollback => :environment do
-    ActiveRecord::Migrator.rollback(File.expand_path(File.dirname(__FILE__) + "/../db/migrate"))
+    ActiveRecord::Migrator.down(File.expand_path(File.dirname(__FILE__) + "/../db/migrate"))
     Rake::Task["db:schema:dump"].invoke if ActiveRecord::Base.schema_format == :ruby
   end
 end

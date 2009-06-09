@@ -1,0 +1,30 @@
+<div style="border: 1px #ffda2e solid; background-color: #fff1af; padding: 0.5em;">
+    <h3 style="margin-top: 0;"><%= subscription.name%></h3>
+	
+	<p>
+		<% if subscription.currently_unlimited? -%>
+		  Unlimited
+		<% else -%>
+		  <%= pluralize(subscription.open_questionnaires, "published survey") %> at a time,
+		  <%= pluralize(subscription.responses_per_month, "response") %> per month
+		<% end -%>
+		
+		<br/>
+		
+		<% if subscription.forever? -%>
+		  Never expires
+		<% else -%>
+	   	   <% if subscription.expired? -%>
+		      <span style="font-weight: bold; font-color: red;">
+		          <% if subscription.past_grace_period? %>
+			         Expired
+		          <% else -%>
+			         Payment overdue; subscription will expire on <%= subscription.grace_period_ends_at %>
+			     <% end -%>
+	          </span>
+		  <% else -%>
+		      Next payment due <%= subscription.rebill_at.strftime("%A, %B %d, %Y") %>
+		  <% end -%>
+		<% end -%>
+	</p>
+</div>

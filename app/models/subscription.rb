@@ -1,28 +1,69 @@
 class Subscription < ActiveRecord::Base
   acts_as_permissioned :permission_names => [:edit, :create_questionnaires, :destroy]
+  belongs_to :subscription_plan
   has_many :questionnaires
   has_many :people, :through => :permissions, :conditions => "permission is null or permission = 'create_questionnaires'"
 
   def self.find_all_by_person(person)
     Permission.find(:all, :conditions => ["permissioned_type = 'Subscription' and person_id = ?", person.id]).collect do |perm|
       perm.permissioned
-    end
+    end.uniq.compact
   end
 
+  def grace_period_ends_at
+    if subscription_plan
+      subscription_plan.add_grace_period(rebill_at)
+    else
+      Time.at(0)
+    end
+  end
+  
+  def rebill_at
+    if subscription_plan
+      subscription_plan.add_rebill_period(last_paid_at)
+    else
+      Time.at(0)
+    end
+  end
+  
   def expired?
-    expires_at < Time.new
+    last_paid_at.nil? or rebill_at < Time.new
   end
 
   def past_grace_period?
-    expires_at < (Time.new + 30.days)
+    grace_period_ends_at and grace_period_ends_at < Time.new
   end
-
+  
   def currently_unlimited?
-    if unlimited
-      return (expires_at.nil? or not past_grace_period?)
+    if subscription_plan and subscription_plan.unlimited
+      return (subscription_plan.forever? or not past_grace_period?)
     else
       return false
     end
+  end
+  
+  def open_questionnaires
+    subscription_plan ? subscription_plan.open_questionnaires : 0
+  end
+  
+  def responses_per_month
+    subscription_plan ? subscription_plan.responses_per_month : 0
+  end
+  
+  def name
+    if subscription_plan
+      "#{subscription_plan.name} subscription"
+    else
+      "No subscription plan"
+    end
+  end
+  
+  def free?
+    subscription_plan and subscription_plan.free?
+  end
+  
+  def forever?
+    subscription_plan and subscription_plan.forever?
   end
 
   def questionnaire_over_limit?(questionnaire)
