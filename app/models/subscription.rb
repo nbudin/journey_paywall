@@ -1,12 +1,19 @@
 class Subscription < ActiveRecord::Base
+  unloadable
   acts_as_permissioned :permission_names => [:edit, :create_questionnaires, :destroy]
   belongs_to :subscription_plan
   has_many :questionnaires
-  has_many :people, :through => :permissions, :conditions => "permission is null or permission = 'create_questionnaires'"
+  #has_many :people, :through => :permissions, :conditions => "permission is null or permission = 'create_questionnaires'"
 
-  def self.find_all_by_person(person)
-    Permission.find(:all, :conditions => ["permissioned_type = 'Subscription' and person_id = ?", person.id]).collect do |perm|
+  def self.find_all_by_person(person, options={})
+    Permission.find(:all, options.update(:conditions => ["permissioned_type = 'Subscription' and person_id = ?", person.id])).collect do |perm|
       perm.permissioned
+    end.uniq.compact
+  end
+  
+  def people
+    permissions.all(:conditions => ["permission is null or permission = 'create_questionnaires'"]).collect do |perm|
+      perm.person
     end.uniq.compact
   end
 
@@ -50,12 +57,21 @@ class Subscription < ActiveRecord::Base
     subscription_plan ? subscription_plan.responses_per_month : 0
   end
   
+  def sid
+    "J#{sprintf '%04d', id}"
+  end
+  
   def name
-    if subscription_plan
-      "#{subscription_plan.name} subscription"
-    else
-      "No subscription plan"
+    sname = ""
+    if people.size == 1
+      sname << "#{people.first.name}'s "
     end
+    if subscription_plan
+      sname << "#{subscription_plan.name}"
+    else
+      sname << "Expired/cancelled"
+    end
+    sname << " subscription (#{sid})"
   end
   
   def free?

@@ -1,12 +1,26 @@
 class SubscriptionPlan < ActiveRecord::Base
+  unloadable
   has_many :subscriptions
-  
+  composed_of :price, :class_name => "Money", :mapping => [%w(cents cents), %w(currency currency)]
+
   def free?
-    price == 0
+    cents == 0
   end
   
   def forever?
     rebill_period == "never"
+  end
+  
+  def price_us_dollars
+    if cents
+      sprintf("%.2f", price.cents / 100.0)
+    else
+      nil
+    end
+  end
+  
+  def price_us_dollars=(p)
+    self.price = Money.us_dollar(p.to_f * 100)
   end
   
   def add_rebill_period(date)

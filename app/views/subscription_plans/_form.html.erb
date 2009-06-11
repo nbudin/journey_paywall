@@ -1,0 +1,95 @@
+<script type="text/javascript">
+	function unlimited_updated() {
+		if ($('subscription_plan_unlimited').checked) {
+			$('subscription_plan_open_questionnaires').disable();
+			$('subscription_plan_responses_per_month').disable();			
+		} else {
+			$('subscription_plan_open_questionnaires').enable();
+			$('subscription_plan_responses_per_month').enable();			
+		}
+	}
+	
+	function rebill_period_updated() {
+		if ($F('subscription_plan_rebill_period') == "never") {
+			$('subscription_plan_price_us_dollars').disable();
+			$('subscription_plan_grace_period').disable();			
+		} else {
+			$('subscription_plan_price_us_dollars').enable();
+			$('subscription_plan_grace_period').enable();			
+		}
+	}
+	
+	Event.observe(document, 'ready', unlimited_updated);
+	Event.observe(document, 'ready', grace_period_updated);
+</script>
+
+<style type="text/css">
+	th {
+		text-align: right;
+	}
+	
+	h3 {
+		border-bottom: 1px black solid;
+	}
+</style>
+
+<% form_for @subscription_plan do |f| -%>
+	<table>
+		<tr>
+			<th>Name</th>
+			<td><%= f.text_field :name %></td>
+		</tr>
+		<tr>
+			<th>Public signup allowed?</th>
+			<td><%= f.check_box :allow_public_signup %></td>
+		</tr>
+		<tr>
+			<td colspan="2"><h3>Limits</h3></td>
+		</tr>
+		<tr>
+			<th>Unlimited</th>
+			<td>
+				<%= f.check_box :unlimited, :onChange => "unlimited_updated()" %>
+			</td>
+		</tr>
+		<tr>
+			<th>Published surveys</th>
+			<td>
+				<%= f.text_field :open_questionnaires, :size => 3 %>
+			</td>
+		</tr>
+		<tr>
+			<th>Responses per month</th>
+			<td>
+				<%= f.text_field :responses_per_month, :size => 5 %>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><h3>Billing</h3></td>
+		</tr>
+		<tr>
+			<th>Bill every</th>
+			<td>
+				<%= f.select :rebill_period, [["month", "monthly"], ["year", "yearly"], ["only bill once", "never"]],
+							 :onChange => "rebill_period_updated()" %>
+			</td>
+		</tr>
+		<tr>
+			<th>Price per billing period</th>
+			<td>
+				$<%= f.text_field :price_us_dollars, :size => 5 %>
+			</td>
+		</tr>
+		<tr>
+			<th>Grace period</th>
+			<td>
+				<%= f.text_field :grace_period, :size => 3 %> days
+			</td>
+		</tr>
+		<tr style="padding-top: 1.5em;">
+			<th></th>
+			<td><%= submit_tag %></td>
+		</tr>
+	</table>
+<% end -%>
+			

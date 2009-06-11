@@ -1,0 +1,53 @@
+<h1>Subscriptions</h1>
+
+<div class="propertypage">
+	<h2>Subscription Plans</h2>
+	
+    <% @subscription_plans.each do |plan| -%>
+		<div style="border: 1px #a740ff solid; background-color: #e5c8ff; 
+					padding: 0.5em; margin-bottom: 0.5em;">
+			<p>
+				<h3 style="display: inline;"><%= plan.name %></h3>
+				(<%= link_to "Edit", edit_subscription_plan_path(plan) %>,
+				<%= link_to "Delete", subscription_plan_path(plan), :method => "delete", :confirm => "Are you sure?" %>)
+			</p>
+			
+			<p>
+				<%= link_to pluralize(plan.subscriptions.size, "subscription"),
+							all_subscriptions_path(:subscription_plan_id => plan.id) %>
+				
+				<br/>
+				
+				<% if plan.allow_public_signup -%>
+				  Publicly available
+				<% else -%>
+				  Private plan
+				<% end -%>
+						
+				<br/>
+				
+				<% if plan.unlimited -%>
+				  Unlimited
+				<% else -%>
+				  <%= pluralize(plan.open_questionnaires, "published survey") %> at a time,
+				  <%= pluralize(plan.responses_per_month, "response") %> per month
+				<% end -%>
+				
+				<br/>
+				
+				<% if plan.free? -%>
+					Free
+				<% else -%>
+					$<%= plan.price_us_dollars %>
+				<% end -%>
+				<% if plan.forever? -%>
+					<% if plan.free? -%>forever<% else %>once<% end -%>
+				<% else -%>
+					<%= plan.rebill_period %>
+				<% end -%>
+			</p>
+		</div>
+	<% end -%>
+	
+	<%= link_to "New plan...", new_subscription_plan_path %>
+</div>

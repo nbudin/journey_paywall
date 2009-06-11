@@ -1,0 +1,7 @@
+<div class="propertypage" id="subscription_list">    
+    <% @subscriptions.each do |subscr| -%>
+       <%= render :partial => "show", :locals => {:subscription => subscr} %>
+    <% end -%>
+    
+    <%= will_paginate @subscriptions %>
+</div>

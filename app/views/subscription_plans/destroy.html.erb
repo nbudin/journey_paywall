@@ -1,0 +1,16 @@
+<h1>Subscriptions</h1>
+
+<div class="propertypage">
+	<h2>Deleting <%= @plan.name %> plan</h2>
+	
+	<p>There are currently <%= pluralize(@plan.subscriptions.size, "subscription") %> on this plan.  In order to
+	delete this plan, these will have to be moved to a different plan.  Please choose a new plan for these
+	subscriptions:</p>
+
+	<% form_tag(subscription_plan_url(@plan), :method => "delete") do %>
+		<p>
+			<%= select_tag "migrate_subscriptions_to", options_for_select(@possible_plans.collect { |p| [p.name, p.id] }) %>
+			<%= submit_tag "Migrate subscriptions and delete #{@plan.name}" %>
+		</p>
+	<% end %>
+</div>

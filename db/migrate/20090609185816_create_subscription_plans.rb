@@ -6,8 +6,10 @@ class CreateSubscriptionPlans < ActiveRecord::Migration
       t.integer :open_questionnaires
       t.integer :responses_per_month
       t.string :rebill_period
-      t.integer :price
+      t.integer :cents
+      t.string :currency
       t.integer :grace_period
+      t.boolean :allow_public_signup
     end
   end
 

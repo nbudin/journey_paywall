@@ -1,13 +1,27 @@
-<div style="border: 1px #ffda2e solid; background-color: #fff1af; padding: 0.5em;">
+<div style="border: 1px #ffda2e solid; background-color: #fff1af; padding: 0.5em; margin-bottom: 0.5em;">
     <h3 style="margin-top: 0;"><%= subscription.name%></h3>
 	
 	<p>
-		<% if subscription.currently_unlimited? -%>
-		  Unlimited
+		<% survey_links = subscription.questionnaires.collect {|q| link_to(q.title, questionnaire_path(q)) } -%>
+		<% if subscription.questionnaires.size > 3 -%>
+		  <%= link_to_function "#{subscription.questionnaires.size} surveys (click to show)", 
+                "$('subscription_#{subscription.id}_show_surveys').hide(); $('subscription_#{subscription.id}_surveys').show();",
+                :id => "subscription_#{subscription.id}_show_surveys" %>
+		  <span id="subscription_<%=subscription.id%>_surveys" style="display: none;">
+		  	Surveys: 
+			<ul>
+				<% survey_links.each do |l| -%>
+					<li><%=l%></li>
+				<% end -%>
+			</ul>
+		  </span>
 		<% else -%>
-		  <%= pluralize(subscription.open_questionnaires, "published survey") %> at a time,
-		  <%= pluralize(subscription.responses_per_month, "response") %> per month
+		  Survey(s): <%= survey_links.join(", ") %>
 		<% end -%>
+		
+		<br/>
+		
+		
 		
 		<br/>
 		

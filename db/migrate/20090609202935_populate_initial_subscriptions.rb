@@ -2,7 +2,7 @@ class PopulateInitialSubscriptions < ActiveRecord::Migration
   def self.up
     courtesy = SubscriptionPlan.create(:name => "Courtesy",
       :unlimited => true,
-      :price => 0,
+      :cents => 0,
       :rebill_period => 'never'
       )
     
