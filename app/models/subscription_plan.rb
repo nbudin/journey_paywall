@@ -23,6 +23,18 @@ class SubscriptionPlan < ActiveRecord::Base
     self.price = Money.us_dollar(p.to_f * 100)
   end
   
+  def human_rebill_period
+    if rebill_period == "never"
+      "billed once"
+    else
+      rebill_period
+    end
+  end
+  
+  def human_price
+    "$#{price_us_dollars} #{human_rebill_period}"
+  end
+  
   def add_rebill_period(date)
     if rebill_period == "monthly"
       date + 1.month

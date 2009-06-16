@@ -1,11 +1,19 @@
 class SubscriptionsController < ApplicationController
   unloadable
-  require_login
+  require_login :except => ['index', 'create']
   
-  before_filter :check_subscription_admin, :except => ['index']
+  include ActiveMerchant::Billing::Integrations
+  
+  before_filter :check_subscription_admin, :only => ['all']
+  rest_permissions
   
   def index
-    @my_subscriptions = Subscription.find_all_by_person(logged_in_person)
+    if logged_in?
+      @my_subscriptions = Subscription.find_all_by_person(logged_in_person)
+    else
+      @my_subscriptions = []
+    end
+    @plans = SubscriptionPlan.find_all_by_allow_public_signup(true)
   end
   
   def all
@@ -47,6 +55,14 @@ class SubscriptionsController < ApplicationController
           page.replace 'subscription_list', :partial => 'paged_results'
         end
       end
+    end
+  end
+  
+  def create
+    if logged_in?
+      
+    elsif params[:person]
+      
     end
   end
   

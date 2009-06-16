@@ -1,0 +1,20 @@
+<h1>New subscription</h1>
+
+<div class="propertypage">
+  <p>
+  	Welcome to Journey, and thanks for considering us!  We just need a few pieces of information from you in order
+	to complete your signup process.  After this page, you'll be directed to PayPal to finish up.
+  </p>
+  
+  <p style="font-weight: bold;">
+  	<%= link_to "If you already have a Journey account, click here to log in.", :controller => "auth", :action => "login" %>
+  </p>
+	
+  <% ae_form_for("person", @person, :url => subscriptions_url,
+	:html => {:id => 'signup_form'}) do |f| -%>
+	
+	<%= hidden_field "subscription[subscription_plan_id]", :value => params[:subscription][:subscription_plan_id] %>
+
+  	<%= render :partial => 'account/signup_form', :locals => { :f => f } %>
+  <% end -%>
+</div>

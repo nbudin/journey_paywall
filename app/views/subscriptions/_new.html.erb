@@ -1,0 +1,50 @@
+<p>Want to create your own online surveys?  We can help.  Journey is simple, flexible, and hassle-free.  We offer
+	   30-day free trials on all new subscriptions, so you can try it out with no risk.</p>
+	
+	<table id="plans">
+		<thead>
+			<tr>
+				<th></th>
+				<% @plans.each do |plan| -%>
+					<th><%=h plan.name %></th>
+				<% end -%>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th>Published surveys</th>
+				<% @plans.each do |plan| -%>
+					<td><%= number_with_delimiter plan.open_questionnaires %></td>
+				<% end -%>
+			</tr>
+			<tr>
+				<th>Responses per month</th>
+				<% @plans.each do |plan| -%>
+					<td><%= number_with_delimiter plan.responses_per_month %></td>
+				<% end -%>
+			</tr>
+			<tr>
+				<th>Price</th>
+				<% @plans.each do |plan| -%>
+					<td><%= plan.human_price %></td>
+				<% end -%>
+			</tr>
+			<tr>
+				<th>Trial period</th>
+				<% @plans.each do |plan| -%>
+					<td>30 days free</td>
+				<% end -%>
+			</tr>
+			<tr>
+				<th></th>
+				<% @plans.each do |plan| -%>
+					<td>
+						<% form_for "subscription" do |f| %>
+							<%= f.hidden_field :subscription_plan_id, :value => plan.id %>
+							<%= submit_tag "Sign up!" %>
+						<% end %>
+					</td>
+				<% end -%>
+			</tr>
+		</tbody>
+	</table>

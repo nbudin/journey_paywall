@@ -5,4 +5,5 @@ require 'journey_questionnaire'
 
 
 config.gem 'money'
+config.gem 'activemerchant', :lib => "active_merchant"
 Journey::QuestionnaireExtensions.register_extension(JourneyPaywall::QuestionnaireExtensions)

@@ -1,9 +1,39 @@
 <h1>Subscriptions</h1>
 
+<%= render :partial => "toplevel_tabs" %>
+
+<style type="text/css">
+	table#plans {
+		border-collapse: collapse;
+	}
+	table#plans tbody th {
+		text-align: right;
+	}
+	table#plans tbody td {
+		text-align: center;
+	}
+	table#plans th, table#plans td {
+		border-bottom: 1px black dotted;
+		padding-left: 0.5em;
+		padding-right: 0.5em;
+	}
+	table#plans tbody tr:last-child th, table#plans tbody tr:last-child td {
+		border-bottom: none;
+	}
+</style>
+
 <div class="propertypage">
-	<h2>My Journey <%= @my_subscriptions.size == 1 ? "subscription" : "subscriptions" %></h2>
+	<% if @my_subscriptions.size > 0 -%>
+		<h2>My Journey <%= @my_subscriptions.size == 1 ? "subscription" : "subscriptions" %></h2>
 	
-    <% @my_subscriptions.each do |subscr| -%>
-       <%= render :partial => "show", :locals => {:subscription => subscr} %>
-    <% end -%>
+    	<% @my_subscriptions.each do |subscr| -%>
+	       <%= render :partial => "show", :locals => {:subscription => subscr} %>
+    	<% end -%>
+	
+		<h2>Add an additional subscription</h2>
+	<% else -%>
+		<h2>Subscribe to Journey</h2>
+	<% end -%>
+	
+	<%= render :partial => 'new' %>
 </div>
