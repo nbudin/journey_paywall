@@ -1,7 +1,8 @@
 class PopulateInitialSubscriptions < ActiveRecord::Migration
   def self.up
     courtesy = SubscriptionPlan.create(:name => "Courtesy",
-      :unlimited => true,
+      :unlimited_open_questionnaires => true,
+      :unlimited_responses_per_month => true,
       :cents => 0,
       :rebill_period => 'never'
       )

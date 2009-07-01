@@ -1,11 +1,9 @@
 <script type="text/javascript">
-	function unlimited_updated() {
-		if ($('subscription_plan_unlimited').checked) {
-			$('subscription_plan_open_questionnaires').disable();
-			$('subscription_plan_responses_per_month').disable();			
+	function unlimited_changed(typ) {
+		if ($('subscription_plan_unlimited_'+typ).checked) {
+			$('subscription_plan_'+typ).disable();
 		} else {
-			$('subscription_plan_open_questionnaires').enable();
-			$('subscription_plan_responses_per_month').enable();			
+			$('subscription_plan_'+typ).enable();
 		}
 	}
 	
@@ -19,8 +17,14 @@
 		}
 	}
 	
-	Event.observe(document, 'ready', unlimited_updated);
-	Event.observe(document, 'ready', grace_period_updated);
+	document.observe("dom:loaded", function() {
+		['open_questionnaires', 'responses_per_month'].each(function (typ) {
+			$('subscription_plan_unlimited_'+typ).observe('change', function () {unlimited_changed(typ)});
+		});
+		$('subscription_plan_rebill_period').observe('change', rebill_period_updated);
+		unlimited_changed();
+		rebill_period_updated();
+	});
 </script>
 
 <style type="text/css">
@@ -49,7 +53,11 @@
 		<tr>
 			<th>Unlimited</th>
 			<td>
-				<%= f.check_box :unlimited, :onChange => "unlimited_updated()" %>
+				<%= f.check_box :unlimited_open_questionnaires %> 
+				<label for="subscription_plan_unlimited_open_questionnaires">Published surveys</label>
+				&nbsp;&nbsp;&nbsp;
+				<%= f.check_box :unlimited_responses_per_month %> 
+				<label for="subscription_plan_unlimited_responses_per_month">Responses</label>
 			</td>
 		</tr>
 		<tr>

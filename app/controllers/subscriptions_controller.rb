@@ -2,8 +2,6 @@ class SubscriptionsController < ApplicationController
   unloadable
   require_login :except => ['index', 'create']
   
-  include ActiveMerchant::Billing::Integrations
-  
   before_filter :check_subscription_admin, :only => ['all']
   rest_permissions
   

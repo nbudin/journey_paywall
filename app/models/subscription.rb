@@ -41,14 +41,22 @@ class Subscription < ActiveRecord::Base
     grace_period_ends_at and grace_period_ends_at < Time.new
   end
   
-  def currently_unlimited?
-    if subscription_plan and subscription_plan.unlimited
+  def currently_unlimited_open_questionnaires?
+    if subscription_plan and subscription_plan.unlimited_open_questionnaires
       return (subscription_plan.forever? or not past_grace_period?)
     else
       return false
     end
   end
   
+  def currently_unlimited_responses_per_month?
+    if subscription_plan and subscription_plan.unlimited_responses_per_month
+      return (subscription_plan.forever? or not past_grace_period?)
+    else
+      return false
+    end
+  end
+
   def open_questionnaires
     subscription_plan ? subscription_plan.open_questionnaires : 0
   end
@@ -83,7 +91,7 @@ class Subscription < ActiveRecord::Base
   end
 
   def questionnaire_over_limit?(questionnaire)
-    if currently_unlimited?
+    if currently_unlimited_open_questionnaires?
       return false
     else
       limit = open_questionnaires || 0
@@ -94,7 +102,7 @@ class Subscription < ActiveRecord::Base
   end
 
   def response_over_limit?(response)
-    if currently_unlimited?
+    if currently_unlimited_responses_per_month?
       return false
     else
       limit = responses_per_month || 0

@@ -2,8 +2,9 @@ class CreateSubscriptionPlans < ActiveRecord::Migration
   def self.up
     create_table :subscription_plans do |t|
       t.string :name
-      t.boolean :unlimited
+      t.boolean :unlimited_open_questionnaires
       t.integer :open_questionnaires
+      t.boolean :unlimited_responses_per_month
       t.integer :responses_per_month
       t.string :rebill_period
       t.integer :cents

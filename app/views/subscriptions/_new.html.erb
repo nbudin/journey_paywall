@@ -1,50 +1,36 @@
-<p>Want to create your own online surveys?  We can help.  Journey is simple, flexible, and hassle-free.  We offer
-	   30-day free trials on all new subscriptions, so you can try it out with no risk.</p>
+<p>Want to create your own online surveys?  We can help.  Journey is simple, flexible, and hassle-free.  Choose a plan
+  from the options below:</p>
 	
-	<table id="plans">
-		<thead>
-			<tr>
-				<th></th>
-				<% @plans.each do |plan| -%>
-					<th><%=h plan.name %></th>
-				<% end -%>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<th>Published surveys</th>
-				<% @plans.each do |plan| -%>
-					<td><%= number_with_delimiter plan.open_questionnaires %></td>
-				<% end -%>
-			</tr>
-			<tr>
-				<th>Responses per month</th>
-				<% @plans.each do |plan| -%>
-					<td><%= number_with_delimiter plan.responses_per_month %></td>
-				<% end -%>
-			</tr>
-			<tr>
-				<th>Price</th>
-				<% @plans.each do |plan| -%>
-					<td><%= plan.human_price %></td>
-				<% end -%>
-			</tr>
-			<tr>
-				<th>Trial period</th>
-				<% @plans.each do |plan| -%>
-					<td>30 days free</td>
-				<% end -%>
-			</tr>
-			<tr>
-				<th></th>
-				<% @plans.each do |plan| -%>
-					<td>
-						<% form_for "subscription" do |f| %>
-							<%= f.hidden_field :subscription_plan_id, :value => plan.id %>
-							<%= submit_tag "Sign up!" %>
-						<% end %>
-					</td>
-				<% end -%>
-			</tr>
-		</tbody>
-	</table>
+<div class="plans">
+	<% @plans.each do |plan| -%>
+	  <div class="plan">
+	  	<h3><%=h plan.name%></h3>
+		
+		<ul class="limits">
+			<li><%= open_questionnaires_limit(plan)%></li>
+			<li><%= responses_per_month_limit(plan)%></li>
+		</ul>
+		
+		<div class="price">
+			<%= plan.human_price %>
+		</div>
+		
+		<% form_for "subscription" do |f| %>
+			<%= f.hidden_field :subscription_plan_id, :value => plan.id %>
+			<button class="signup">
+				<h4>Sign up</h4>
+				<h5>First 30 days free!</h5>
+			</button>
+		<% end %>
+	  </div>
+	<% end -%>
+</div>
+	
+<h3>Refreshingly simple pricing</h3>
+
+<p>That's it?  Where's the "starter" plan?  Where are my special upgrade offers?  Can I get a $10 Best Buy gift certificate
+if I fill out a customer satisfaction survey?</p>
+
+<p>We know you've got more important things to do than spend hours deciphering a complicated feature matrix and deciding which
+ones you really need.  So we decided to <b>just let everyone use the entire program</b>. The first 30 days are free on all our 
+plans, so you can try them out with no risk.</p>

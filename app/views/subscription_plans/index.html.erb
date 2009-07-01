@@ -27,12 +27,7 @@
 						
 				<br/>
 				
-				<% if plan.unlimited -%>
-				  Unlimited
-				<% else -%>
-				  <%= pluralize(plan.open_questionnaires, "published survey") %> at a time,
-				  <%= pluralize(plan.responses_per_month, "response") %> per month
-				<% end -%>
+				<%= plan_limits(plan) %>
 				
 				<br/>
 				
