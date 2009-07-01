@@ -1,6 +1,7 @@
 class SubscriptionPlan < ActiveRecord::Base
   unloadable
   has_many :subscriptions
+  has_many :booster_packs
   composed_of :price, :class_name => "Money", :mapping => [%w(cents cents), %w(currency currency)]
 
   def free?
