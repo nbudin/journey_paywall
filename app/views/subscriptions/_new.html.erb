@@ -78,7 +78,7 @@
 			<%= plan.human_price %>
 		</div>
 		
-		<% form_for "subscription" do |f| %>
+		<% form_for "subscription", :url => subscriptions_url do |f| %>
 			<%= f.hidden_field :subscription_plan_id, :value => plan.id %>
 			<button class="signup">
 				<h4>Sign up</h4>
