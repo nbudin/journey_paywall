@@ -17,6 +17,11 @@ class SubscriptionsController < ApplicationController
   def new
     respond_to do |format|
       format.html { render :partial => "new", :layout => false }
+      format.js do
+        render :update do |page|
+          page['new_subscription'].replace(render :partial => "new", :layout => false)
+        end
+      end
     end
   end
   
