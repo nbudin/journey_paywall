@@ -1,8 +1,9 @@
 class SubscriptionsController < ApplicationController
   unloadable
-  require_login :except => ['index', 'create']
+  require_login :except => ['index', 'create', 'new']
   
   before_filter :check_subscription_admin, :only => ['all']
+  before_filter :get_plans
   rest_permissions
   
   def index
@@ -11,7 +12,12 @@ class SubscriptionsController < ApplicationController
     else
       @my_subscriptions = []
     end
-    @plans = SubscriptionPlan.find_all_by_allow_public_signup(true)
+  end
+  
+  def new
+    respond_to do |format|
+      format.html { render :partial => "new", :layout => false }
+    end
   end
   
   def all
@@ -69,5 +75,9 @@ class SubscriptionsController < ApplicationController
     unless logged_in_person.permitted?("edit", Subscription)
       access_denied "Sorry, only subscription administrators are allowed to view that page."
     end
+  end
+  
+  def get_plans
+    @plans = SubscriptionPlan.find_all_by_allow_public_signup(true)
   end
 end
