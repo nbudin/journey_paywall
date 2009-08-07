@@ -63,42 +63,50 @@
 
 <p>Want to create your own online surveys?  We can help.  Journey is simple, flexible, and hassle-free.  Choose a plan
   from the options below:</p>
+
+<% if @plans.size > 0 -%>
+	<div class="plans">
+		<% @plans.each do |plan| -%>
+		  <div class="plan">
+		  	<h3><%=h plan.name%></h3>
+			
+			<ul class="limits">
+				<li><%= open_questionnaires_limit(plan)%></li>
+				<li><%= responses_per_month_limit(plan)%></li>
+			</ul>
+			
+			<div class="price">
+				<%= plan.human_price %>
+			</div>
+			
+			<% form_for "subscription", :url => subscriptions_url do |f| %>
+				<%= f.hidden_field :subscription_plan_id, :value => plan.id %>
+				<button class="signup">
+					<h4>Sign up</h4>
+					<h5>First 30 days free!</h5>
+				</button>
+			<% end %>
+		  </div>
+		<% end -%>
+	</div>
 	
-<div class="plans">
-	<% @plans.each do |plan| -%>
-	  <div class="plan">
-	  	<h3><%=h plan.name%></h3>
-		
-		<ul class="limits">
-			<li><%= open_questionnaires_limit(plan)%></li>
-			<li><%= responses_per_month_limit(plan)%></li>
-		</ul>
-		
-		<div class="price">
-			<%= plan.human_price %>
-		</div>
-		
-		<% form_for "subscription", :url => subscriptions_url do |f| %>
-			<%= f.hidden_field :subscription_plan_id, :value => plan.id %>
-			<button class="signup">
-				<h4>Sign up</h4>
-				<h5>First 30 days free!</h5>
-			</button>
-		<% end %>
-	  </div>
-	<% end -%>
-</div>
+	<h3>Refreshingly simple pricing</h3>
+
+	<p>That's it?  Where's the "starter" plan?  Where are my special upgrade offers?  Can I get a $10 Best Buy gift certificate
+	if I fill out a customer satisfaction survey?</p>
 	
-<h3>Refreshingly simple pricing</h3>
-
-<p>That's it?  Where's the "starter" plan?  Where are my special upgrade offers?  Can I get a $10 Best Buy gift certificate
-if I fill out a customer satisfaction survey?</p>
-
-<p>We know you've got more important things to do than spend hours deciphering a complicated feature matrix and deciding which
-ones you really need.  So we decided to <b>just let everyone use the entire program</b>. The first 30 days are free on all our 
-plans, so you can try them out with no risk.</p>
-
-<h3>Custom plans available</h3>
-
-<p>If our plans don't fit your needs, let's talk.  Just email Nat at 
-<%= mail_to "nat@sugarpond.net" %> - we can create a custom plan just for you.</p>
+	<p>We know you've got more important things to do than spend hours deciphering a complicated feature matrix and deciding which
+	ones you really need.  So we decided to <b>just let everyone use the entire program</b>. The first 30 days are free on all our 
+	plans, so you can try them out with no risk.</p>
+	
+	<h3>Custom plans available</h3>
+	
+	<p>If our plans don't fit your needs, let's talk.  Just email Nat at 
+	<%= mail_to "nat@sugarpond.net" %> - we can create a custom plan just for you.</p>
+<% else -%>
+	<p><emph>Sorry, we're not quite ready to offer subscriptions yet.  Please check
+	back soon!</emph></p>
+	
+	<p>If you'd like to know when subscriptions are available, please email
+	<%= mail_to "nat@sugarpond.net" %> to get on our mailing list.</p>
+<% end -%>
