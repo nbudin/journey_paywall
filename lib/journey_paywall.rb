@@ -6,6 +6,21 @@ module JourneyPaywall
       base.class_eval do
         belongs_to :subscription
         validate :check_subscription_limits
+        
+        add_creator_warning_hook(lambda do |person|
+          subscrs = Subscription.find_all_by_person(person)
+          if subscrs.size == 0
+            "You won't be able to publish this survey without a paid Journey subscription."
+          else
+            unless Subscription.find_all_by_person(person).any? { |subscr|
+              not subscr.questionnaire_over_limit?(Questionnaire.new)
+            }
+              "Your subscription already has the maximum number of published surveys.  If
+              you want to publish this one, you'll have to close one of your existing
+              surveys first."
+            end
+          end
+        end)
       end
     end
     
