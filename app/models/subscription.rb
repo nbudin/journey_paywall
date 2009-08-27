@@ -3,6 +3,7 @@ class Subscription < ActiveRecord::Base
   acts_as_permissioned :permission_names => [:edit, :create_questionnaires, :destroy]
   belongs_to :subscription_plan
   has_many :questionnaires
+  belongs_to :payment_method, :polymorphic => true, :dependent => :destroy
   #has_many :people, :through => :permissions, :conditions => "permission is null or permission = 'create_questionnaires'"
 
   def self.find_all_by_person(person, options={})
@@ -88,49 +89,6 @@ class Subscription < ActiveRecord::Base
   
   def forever?
     subscription_plan and subscription_plan.forever?
-  end
-  
-  def create_google_checkout_cmd(frontend, message=nil)
-    checkout_cmd = frontend.create_checkout_command
-    
-    if free?
-      return nil
-    end
-    
-    checkout_cmd.shopping_cart.create_item do |item|
-      item.name = name
-      item.description = "TODO: Add limits here"
-      item.quantity = 1
-      item.private_data = { :product => "journey", :id => id, :plan_id => subscription_plan.id }
-      
-      if forever?
-        item.unit_price = subscription_plan.price
-      else
-        item.unit_price = Money.new(0, "USD")
-      
-        item.create_subscription do |subscription|
-          subscription.type = "merchant"
-          case subscription_plan.rebill_period
-            when "monthly" then subscription.period = "MONTHLY"
-            when "yearly" then subscription.period = "YEARLY"
-          end
-          subscription.start_date = rebill_at
-          
-          subscription.add_payment do |payment|
-            payment.maximum_charge = subscription_plan.price
-          end
-        end
-      end
-      
-      if message
-        item.create_digital_content do |content|
-          content.display_disposition = "OPTIMISTIC"
-          content.description = message
-        end
-      end
-    end
-    
-    return checkout_cmd
   end
 
   def questionnaire_over_limit?(questionnaire)

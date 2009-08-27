@@ -80,19 +80,20 @@ class SubscriptionsController < ApplicationController
         access_denied("Sorry, but that plan is not publicly accessible.  If you want to sign up for it, please contact support.")
       end
       
-      @subscription = Subscription.create :subscription_plan => @plan
-      @subscription.grant(@person)
-      
-      @frontend = JourneyPaywall.google_frontend
-      checkout_cmd = @subscription.create_google_checkout_cmd(@frontend,
-        "Thanks for choosing Journey!  Your subscription is being set up.  "+
-        "Feel free to <a href=\"#{url_for "/"}\">log on</a> and try it out!")
-      
-      if checkout_cmd
-        response = checkout_cmd.send_to_google_checkout
-        redirect_to response.redirect_url
-      else
+      if @plan.free?
         redirect_to subscriptions_url
+      else
+        @payment_method = PaymentMethods::GoogleSubscription.create
+        
+        @subscription = Subscription.create :subscription_plan => @plan, :payment_method => @payment_method
+        @subscription.grant(@person)
+      
+        redirect_url = @subscription.payment_method.initiate(
+          "Thanks for choosing Journey!  Your subscription is being set up.  "+
+          "Feel free to <a href=\"#{url_for "/"}\">log on</a> and try it out!"
+        )
+        
+        redirect_to (redirect_url or subscriptions_url)
       end
     end
   end

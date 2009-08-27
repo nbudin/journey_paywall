@@ -13,18 +13,7 @@ Journey::UserOptions.add_logged_in_option("Subscription", {:controller => "subsc
 
 yamlpath = "#{RAILS_ROOT}/config/journey_paywall.yml"
 begin
-  conf = YAML.load_file(yamlpath)
+  JourneyPaywall.configuration = YAML.load_file(yamlpath)
 rescue
   puts "WARNING: Couldn't load #{yamlpath} file.  The Google Checkout integration will not work."
-end
-
-if conf
-  googleconf = conf['google']
-  if googleconf
-    JourneyPaywall.merchant_id = googleconf['merchant_id']
-    JourneyPaywall.merchant_key = googleconf['merchant_key']
-    if googleconf['use_sandbox']
-      JourneyPaywall.use_sandbox
-    end
-  end
 end
