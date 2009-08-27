@@ -27,8 +27,7 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
   end
   
   def initiate(message=nil)
-    frontend = GoogleSubscription.frontend
-    checkout_cmd = create_google_checkout_cmd(frontend, message)
+    checkout_cmd = create_google_checkout_cmd(self.class.frontend, message)
     
     if checkout_cmd
       response = checkout_cmd.send_to_google_checkout
@@ -39,7 +38,7 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
   protected
   
   def request_payment_inner(amount)
-    recur_cmd = frontend.create_create_order_recurrence_request_command
+    recur_cmd = self.class.frontend.create_create_order_recurrence_request_command
     
     recur_cmd.google_order_number = google_order_number
     recur_cmd.shopping_cart.create_item do |item|
