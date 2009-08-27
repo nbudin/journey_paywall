@@ -18,7 +18,7 @@ class Subscription < ActiveRecord::Base
   end
 
   def grace_period_ends_at
-    if subscription_plan
+    if subscription_plan and rebill_at
       subscription_plan.add_grace_period(rebill_at)
     else
       Time.at(0)
@@ -26,7 +26,7 @@ class Subscription < ActiveRecord::Base
   end
   
   def rebill_at
-    if subscription_plan
+    if subscription_plan and last_paid_at
       subscription_plan.add_rebill_period(last_paid_at)
     else
       Time.at(0)
