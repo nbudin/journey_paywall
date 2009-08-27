@@ -2,7 +2,6 @@ class PaymentNotificationController < ApplicationController
   def google
     authenticate_or_request_with_http_basic("Google Checkout notification endpoint") do |merchant_id, merchant_key|
       unless PaymentMethods::GoogleSubscription.merchant_credentials_match?(merchant_id, merchant_key)
-        logger.error "Something tried to send a google notification using credentials: #{merchant_id}:#{merchant_key}"
         return head :unauthorized
       end
     end
