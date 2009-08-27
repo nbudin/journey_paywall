@@ -60,7 +60,7 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
                             :subscription_id => subscription.id, 
                             :plan_id => subscription.subscription_plan.id }
       
-      if forever?
+      if subscription.forever?
         item.unit_price = subscription.subscription_plan.price
       else
         item.unit_price = Money.new(0, "USD")
