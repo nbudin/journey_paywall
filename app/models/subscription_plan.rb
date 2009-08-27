@@ -45,7 +45,7 @@ class SubscriptionPlan < ActiveRecord::Base
       nil
     end
   end
-  
+    
   def add_grace_period(date)
     date + grace_period.days
   end

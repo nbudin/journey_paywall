@@ -69,9 +69,31 @@ class SubscriptionsController < ApplicationController
   
   def create
     if logged_in?
-      
+      @person = logged_in_person
     elsif params[:person]
+      @account_creation_result = create_account_and_person()
+    end
+    
+    if @person
+      @plan = SubscriptionPlan.find(params[:subscription][:subscription_plan_id])
+      unless @plan.allow_public_signup
+        access_denied("Sorry, but that plan is not publicly accessible.  If you want to sign up for it, please contact support.")
+      end
       
+      @subscription = Subscription.create :subscription_plan => @plan
+      @subscription.grant(@person)
+      
+      @frontend = JourneyPaywall.google_frontend
+      checkout_cmd = @subscription.create_google_checkout_cmd(@frontend,
+        "Thanks for choosing Journey!  Your subscription is being set up.  "+
+        "Feel free to <a href=\"#{url_for "/"}\">log on</a> and try it out!")
+      
+      if checkout_cmd
+        response = checkout_cmd.send_to_google_checkout
+        redirect_to response.redirect_url
+      else
+        redirect_to subscriptions_url
+      end
     end
   end
   

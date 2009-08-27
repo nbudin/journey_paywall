@@ -1,6 +1,40 @@
 # Journey-paywall
 
 module JourneyPaywall
+  @@merchant_id = nil
+  def self.merchant_id=(id)
+    @@merchant_id = id
+  end
+  
+  @@merchant_key = nil
+  def self.merchant_key=(key)
+    @@merchant_key = key
+  end
+  
+  @@use_sandbox = false
+  def self.use_sandbox
+    @@use_sandbox = true
+  end
+  
+  class TaxTableFactory
+    def effective_tax_tables_at(time)
+      nil
+    end
+  end
+  
+  @@tax_table_factory = TaxTableFactory.new
+  
+  def self.google_frontend
+    frontend = Google4R::Checkout::Frontend.new(
+      :merchant_id => @@merchant_id,
+      :merchant_key => @@merchant_key,
+      :use_sandbox => @@use_sandbox
+    )
+    frontend.tax_table_factory = @@tax_table_factory
+    
+    return frontend
+  end
+  
   module QuestionnaireExtensions
     def self.included(base)
       base.class_eval do
