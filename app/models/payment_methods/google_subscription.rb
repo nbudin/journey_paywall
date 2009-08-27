@@ -6,7 +6,11 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
     logger.error "Something tried to send a google notification using credentials: #{merchant_id}:#{merchant_key}"
     logger.error "The credentials we want are:                                     #{conf['merchant_id']}:#{conf['merchant_key']}"
 
-    conf['merchant_id'] == merchant_id and conf['merchant_key'] == merchant_key
+    if (conf['merchant_id'] == merchant_id and conf['merchant_key'] == merchant_key)
+      return true
+    else
+      return false
+    end
   end
   
   class TaxTableFactory
