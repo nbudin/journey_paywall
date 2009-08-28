@@ -3,8 +3,6 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
     
   def self.merchant_credentials_match?(merchant_id, merchant_key)
     conf = JourneyPaywall.configuration['google']
-    logger.error "Something tried to send a google notification using credentials: #{merchant_id}:#{merchant_key}"
-    logger.error "The credentials we want are:                                     #{conf['merchant_id']}:#{conf['merchant_key']}"
 
     if (conf['merchant_id'].to_s == merchant_id.to_s) and (conf['merchant_key'].to_s == merchant_key.to_s)
       return true

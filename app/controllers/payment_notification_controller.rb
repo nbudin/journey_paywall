@@ -14,8 +14,8 @@ class PaymentNotificationController < ApplicationController
     rescue Google4R::Checkout::UnknownNotificationType
        # This can happen if Google adds new commands and Google4R has not been
        # upgraded yet. It is not fatal.
-       render :text => 'ignoring unknown notification type', :status => 200
-       return
+       logger.warn "Unknown notification type"
+       return render :text => 'ignoring unknown notification type', :status => 200
     end
     
     if notification.kind_of? Google4R::Checkout::NewOrderNotification
