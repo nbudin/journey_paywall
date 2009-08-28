@@ -1,9 +1,7 @@
 class PaymentNotificationController < ApplicationController
   def google
     authenticate_or_request_with_http_basic("Google Checkout notification endpoint") do |merchant_id, merchant_key|
-      unless PaymentMethods::GoogleSubscription.merchant_credentials_match?(merchant_id, merchant_key)
-        return head :unauthorized
-      end
+      PaymentMethods::GoogleSubscription.merchant_credentials_match?(merchant_id, merchant_key)
     end
     
     frontend = PaymentMethods::GoogleSubscription.frontend
@@ -36,6 +34,6 @@ class PaymentNotificationController < ApplicationController
     end
     
     notification_acknowledgement = Google4R::Checkout::NotificationAcknowledgement.new(notification)
-    #render :xml => notification_acknowledgement, :status => 200
+    render :xml => notification_acknowledgement, :status => 200
   end
 end
