@@ -18,7 +18,7 @@ class PaymentNotificationController < ApplicationController
        return
     end
     
-    if notification.kind_of? NewOrderNotification
+    if notification.kind_of? Google4R::Checkout::NewOrderNotification
       notification.shopping_cart.items.each do |item|
         if item.private_data and item.private_data[:subscription_id]
           @subscription = Subscription.find(item.private_data[:subscription_id])
@@ -29,7 +29,7 @@ class PaymentNotificationController < ApplicationController
           @gs.save
         end
       end
-    elsif notification.kind_of? OrderStateChangeNotification
+    elsif notification.kind_of? Google4R::Checkout::OrderStateChangeNotification
       @gs = PaymentMethods::GoogleSubscription.find_by_google_order_number(notification.google_order_number)
       @gs.financial_order_state = notification.new_financial_order_state
       @gs.save
