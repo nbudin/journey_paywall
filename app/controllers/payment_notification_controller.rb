@@ -36,6 +36,6 @@ class PaymentNotificationController < ApplicationController
     end
     
     notification_acknowledgement = Google4R::Checkout::NotificationAcknowledgement.new(notification)
-    render :xml => notification_acknowledgement, :status => 200
+    #render :xml => notification_acknowledgement, :status => 200
   end
 end
