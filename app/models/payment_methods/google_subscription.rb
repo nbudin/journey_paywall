@@ -1,5 +1,7 @@
 class PaymentMethods::GoogleSubscription < ActiveRecord::Base
   include PaymentMethod
+  
+  has_many :google_orders
     
   def self.merchant_credentials_match?(merchant_id, merchant_key)
     conf = JourneyPaywall.configuration['google']
@@ -52,7 +54,8 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
       item.quantity = 1
     end
     
-    recur_cmd.send_to_google_checkout
+    response = recur_cmd.send_to_google_checkout
+    google_orders.create :google_order_number => response.new_google_order_number
   end
   
   def create_google_checkout_cmd(frontend, message=nil)
