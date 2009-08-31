@@ -19,8 +19,12 @@ class PaymentNotificationController < ApplicationController
     logger.debug request.raw_post
         
     if notification.kind_of? Google4R::Checkout::NewOrderNotification
+      is_subscription = false
+      
       notification.shopping_cart.items.each do |item|
         if item.private_data and item.private_data["subscription_id"]
+          is_subscription = true
+          
           @subscription = Subscription.find(item.private_data["subscription_id"])
           if @subscription.nil?
             return head :text => "No subscription with ID #{item.private_data["subscription_id"]}", :status => 404
@@ -31,6 +35,12 @@ class PaymentNotificationController < ApplicationController
           @gs.financial_order_state = notification.financial_order_state
           @gs.save
         end
+      end
+      
+      unless is_subscription
+        @order = PaymentMethods::GoogleOrder.find_by_google_order_number(notification.google_order_number)
+        @order.financial_order_state = notification.financial_order_state
+        @order.save
       end
     elsif notification.kind_of? Google4R::Checkout::OrderStateChangeNotification
       @order = PaymentMethods::GoogleSubscription.find_by_google_order_number(notification.google_order_number)
