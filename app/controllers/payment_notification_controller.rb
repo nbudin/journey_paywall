@@ -16,12 +16,15 @@ class PaymentNotificationController < ApplicationController
        return render :text => 'ignoring unknown notification type', :status => 200
     end
     
-    logger.error request.raw_post
-    
+    logger.debug request.raw_post
+        
     if notification.kind_of? Google4R::Checkout::NewOrderNotification
       notification.shopping_cart.items.each do |item|
-        if item.private_data and item.private_data[:subscription_id]
-          @subscription = Subscription.find(item.private_data[:subscription_id].to_i)
+        if item.private_data and item.private_data["subscription_id"]
+          @subscription = Subscription.find(item.private_data["subscription_id"])
+          if @subscription.nil?
+            return head :text => "No subscription with ID #{item.private_data["subscription_id"]}", :status => 404
+          end
 
           @gs = @subscription.payment_method
           @gs.google_order_number = notification.google_order_number
@@ -32,7 +35,7 @@ class PaymentNotificationController < ApplicationController
     elsif notification.kind_of? Google4R::Checkout::OrderStateChangeNotification
       @gs = PaymentMethods::GoogleSubscription.find_by_google_order_number(notification.google_order_number)
       if @gs.nil?
-        return head :status => 404
+        return head, :text => "No GoogleSubscription found with order number #{notification.google_order_number}", :status => 404
       else
         @gs.financial_order_state = notification.new_financial_order_state
         @gs.save
