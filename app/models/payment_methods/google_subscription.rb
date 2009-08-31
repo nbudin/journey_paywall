@@ -55,7 +55,7 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
     end
     
     response = recur_cmd.send_to_google_checkout
-    google_orders.create :google_order_number => response.new_google_order_number
+    google_orders.create :google_order_number => response.new_google_order_number, :amount => amount
   end
   
   def create_google_checkout_cmd(frontend, message=nil)
