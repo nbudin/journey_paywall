@@ -16,7 +16,7 @@ class PaymentNotificationController < ApplicationController
        return render :text => 'ignoring unknown notification type', :status => 200
     end
     
-    log.error request.raw_post
+    logger.error request.raw_post
     
     if notification.kind_of? Google4R::Checkout::NewOrderNotification
       notification.shopping_cart.items.each do |item|
