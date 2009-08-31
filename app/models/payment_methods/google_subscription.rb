@@ -44,7 +44,7 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
   
   protected
   
-  def request_payment_inner(amount)
+  def request_payment_inner(new_expiry_date, amount)
     recur_cmd = self.class.frontend.create_create_order_recurrence_request_command
     
     recur_cmd.google_order_number = google_order_number
