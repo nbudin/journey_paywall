@@ -7,18 +7,18 @@ module PaymentMethod
         raise "This is an abstract method."
       end
       
-      def request_payment(new_expiry_date, amount=nil)
-        request_payment_inner(new_expiry_date, amount || subscription.subscription_plan.price)
+      def request_payment(amount=nil)
+        request_payment_inner(amount || subscription.subscription_plan.price)
       end
       
       protected
       
-      def request_payment_inner(new_expiry_date, amount)
+      def request_payment_inner(amount)
         raise "This is an abstract method."
       end
       
-      def payment_successful(new_expiry_date, amount)
-        subscription.expires_at = new_expiry_date
+      def payment_successful(amount)
+        subscription.last_paid_at = Time.new
         subscription.save
       end
     end
