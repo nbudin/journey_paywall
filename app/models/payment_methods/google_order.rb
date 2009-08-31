@@ -6,7 +6,7 @@ class PaymentMethods::GoogleOrder < ActiveRecord::Base
   
   def financial_order_state=(new_state)
     old_state = financial_order_state
-    update_attribute(:financial_order_state, new_state)
+    write_attribute(:financial_order_state, new_state)
     
     if old_state != new_state
       if new_state == "CHARGEABLE"
