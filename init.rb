@@ -6,7 +6,7 @@ require 'paywall_helpers'
 require 'yaml'
 
 config.gem 'money'
-config.gem 'nbudin-google4r-checkout', :lib => 'google4r/checkout', :source => 'http://gems.github.com', :version => "~> 1.0.9"
+config.gem 'nbudin-google4r-checkout', :lib => 'google4r/checkout', :source => 'http://gems.github.com', :version => "~> 1.0.10"
 Journey::QuestionnaireExtensions.register_extension(JourneyPaywall::QuestionnaireExtensions)
 Journey::UserOptions.add_logged_out_option("Subscribe", {:controller => "subscriptions", :action => "index"})
 Journey::UserOptions.add_logged_in_option("Subscription", {:controller => "subscriptions", :action => "index"})
