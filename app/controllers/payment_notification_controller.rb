@@ -35,7 +35,7 @@ class PaymentNotificationController < ApplicationController
           @gs.financial_order_state = notification.financial_order_state
           @gs.save
         end
-      end
+      end 
       
       unless is_subscription
         @order = PaymentMethods::GoogleOrder.find_by_google_order_number(notification.google_order_number)
@@ -43,16 +43,28 @@ class PaymentNotificationController < ApplicationController
         @order.save
       end
     elsif notification.kind_of? Google4R::Checkout::OrderStateChangeNotification
-      @order = PaymentMethods::GoogleSubscription.find_by_google_order_number(notification.google_order_number)
-      if @order.nil?
+      @subscription = PaymentMethods::GoogleSubscription.find_by_google_order_number(notification.google_order_number)
+      if @subscription
+        @subscription.financial_order_state = notification.new_financial_order_state
+        @subscription.save
+      else
         @order = PaymentMethods::GoogleOrder.find_by_google_order_number(notification.google_order_number)
         if @order.nil?
           return head :text => "No record found with order number #{notification.google_order_number}", :status => 404
         end
+        
+        @order.financial_order_state = notification.new_financial_order_state
+        @order.save
       end
-      
-      @order.financial_order_state = notification.new_financial_order_state
-      @order.save
+    end
+    
+    if @subscription
+      if @subscription.expired?
+        if @subscription.financial_order_state == "CHARGEABLE"
+          # auto-bill when it becomes chargeable
+          @subscription.payment_method.request_payment
+        end
+      end
     end
     
     notification_acknowledgement = Google4R::Checkout::NotificationAcknowledgement.new(notification)
