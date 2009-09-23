@@ -7,7 +7,8 @@
   </p>
   
   <p style="font-weight: bold;">
-  	<%= link_to "If you already have a Journey account, click here to log in.", :controller => "auth", :action => "login" %>
+  	<%= link_to "If you already have a Journey account, click here to log in.", :controller => "auth", :action => "login",
+		:return_to => subscriptions_url %>
   </p>
 	
   <% ae_form_for("person", @person, :url => subscriptions_url,

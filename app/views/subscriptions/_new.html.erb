@@ -1,36 +1,112 @@
-<p>Want to create your own online surveys?  We can help.  Journey is simple, flexible, and hassle-free.  Choose a plan
-  from the options below:</p>
+<style type="text/css">
+	.plans {
+		max-width: 60em;
+		text-align: center;
+	}
+	.plan {
+		display: inline-block; 
+		border: 1px black solid; 
+		background-color: white;
+		padding: 0.5em;
+		text-align: center;
+		border-radius: 0.5em;
+		-moz-border-radius: 0.5em;
+		-webkit-border-radius: 0.5em;
+		width: 18em;
+		margin: 0.25em;
+	}
 	
-<div class="plans">
-	<% @plans.each do |plan| -%>
-	  <div class="plan">
-	  	<h3><%=h plan.name%></h3>
-		
-		<ul class="limits">
-			<li><%= open_questionnaires_limit(plan)%></li>
-			<li><%= responses_per_month_limit(plan)%></li>
-		</ul>
-		
-		<div class="price">
-			<%= plan.human_price %>
-		</div>
-		
-		<% form_for "subscription" do |f| %>
-			<%= f.hidden_field :subscription_plan_id, :value => plan.id %>
-			<button class="signup">
-				<h4>Sign up</h4>
-				<h5>First 30 days free!</h5>
-			</button>
-		<% end %>
-	  </div>
-	<% end -%>
-</div>
+	.plan h3 {
+		margin-top: 0;
+		font-size: 150%;
+		background-color: #bad032;
+		padding: 0.25em;
+		border-radius: 0.25em;
+		-moz-border-radius: 0.25em;
+		-webkit-border-radius: 0.25em;
+	}
 	
-<h3>Refreshingly simple pricing</h3>
+	.plan ul {
+		text-align: left;
+		list-style-type: square;
+		margin-left: 0;
+		padding-left: 1em;
+	}
+	
+	.plan .price {
+		font-style: italic;
+		margin-bottom: 0.5em;
+		font-size: 110%;
+	}
+	
+	button.signup {
+		background-color: #080; 
+		color: white; 
+		cursor: pointer;
+		border: 2px #bad032 solid;
+		border-radius: 10px; 
+		-moz-border-radius: 10px; 
+		-webkit-border-radius: 10px;
+	}
+	
+	button.signup h4 {
+		font-size: 125%; 
+		font-weight: bold;
+		margin: 2px;
+	}
+	
+	button.signup h5 {
+		text-transform: uppercase;
+		margin: 2px;
+	}
+</style>
 
-<p>That's it?  Where's the "starter" plan?  Where are my special upgrade offers?  Can I get a $10 Best Buy gift certificate
-if I fill out a customer satisfaction survey?</p>
+<% if @plans.size > 0 -%>
+	<p>Want to create your own online surveys?  We can help.  Journey is simple, flexible, and hassle-free.  Choose a plan
+  	from the options below:</p>
 
-<p>We know you've got more important things to do than spend hours deciphering a complicated feature matrix and deciding which
-ones you really need.  So we decided to <b>just let everyone use the entire program</b>. The first 30 days are free on all our 
-plans, so you can try them out with no risk.</p>
+	<div class="plans">
+		<% @plans.each do |plan| -%>
+		  <div class="plan">
+		  	<h3><%=h plan.name%></h3>
+			
+			<ul class="limits">
+				<li><%= open_questionnaires_limit(plan)%></li>
+				<li><%= responses_per_month_limit(plan)%></li>
+			</ul>
+			
+			<div class="price">
+				<%= plan.human_price %>
+			</div>
+			
+			<% form_for "subscription", :url => subscriptions_url do |f| %>
+				<%= f.hidden_field :subscription_plan_id, :value => plan.id %>
+				<button class="signup">
+					<h4>Sign up</h4>
+					<h5>First 30 days free!</h5>
+				</button>
+			<% end %>
+		  </div>
+		<% end -%>
+	</div>
+	
+	<h3>Refreshingly simple pricing</h3>
+
+	<p>That's it?  Where's the "starter" plan?  Where are my special upgrade offers?  Can I get a $10 Best Buy gift certificate
+	if I fill out a customer satisfaction survey?</p>
+	
+	<p>We know you've got more important things to do than spend hours deciphering a complicated feature matrix and deciding which
+	ones you really need.  So we decided to <b>just let everyone use the entire program</b>. The first 30 days are free on all our 
+	plans, so you can try them out with no risk.</p>
+	
+	<h3>Custom plans available</h3>
+	
+	<p>If our plans don't fit your needs, let's talk.  Just email Nat at 
+	<%= mail_to "nat@sugarpond.net" %> - we can create a custom plan just for you.</p>
+<% else -%>
+	<p><emph>Sorry, we're not quite ready to offer subscriptions yet.  Please check
+	back soon!</emph></p>
+	
+	<p>If you'd like to know when subscriptions are available, please email
+	<%= mail_to "nat@sugarpond.net" %> to get on our mailing list.</p>
+<% end -%>

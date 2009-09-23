@@ -1,11 +1,36 @@
 # Journey-paywall
 
 module JourneyPaywall
+  @@configuration = {}
+  
+  def self.configuration
+    @@configuration
+  end
+  
+  def self.configuration=(configuration)
+    @@configuration = configuration
+  end
+  
   module QuestionnaireExtensions
     def self.included(base)
       base.class_eval do
         belongs_to :subscription
         validate :check_subscription_limits
+        
+        add_creator_warning_hook(lambda do |person|
+          subscrs = Subscription.find_all_by_person(person)
+          if subscrs.size == 0
+            "To publish this survey, you'll need a paid Journey subscription."
+          else
+            unless Subscription.find_all_by_person(person).any? { |subscr|
+              not subscr.questionnaire_over_limit?(Questionnaire.new)
+            }
+              "You've hit your subscription's limit on simultaneously published surveys!  To 
+              publish this one, you'll have to upgrade your subscription, or close one of your
+              existing surveys first."
+            end
+          end
+        end)
       end
     end
     

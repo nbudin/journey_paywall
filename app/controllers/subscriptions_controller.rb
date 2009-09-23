@@ -1,8 +1,9 @@
 class SubscriptionsController < ApplicationController
   unloadable
-  require_login :except => ['index', 'create']
+  require_login :except => ['index', 'create', 'new']
   
   before_filter :check_subscription_admin, :only => ['all']
+  before_filter :get_plans
   rest_permissions
   
   def index
@@ -11,7 +12,17 @@ class SubscriptionsController < ApplicationController
     else
       @my_subscriptions = []
     end
-    @plans = SubscriptionPlan.find_all_by_allow_public_signup(true)
+  end
+  
+  def new
+    respond_to do |format|
+      format.html { render :partial => "new", :layout => false }
+      format.js do
+        render :update do |page|
+          page['new_subscription'].replace(render :partial => "new", :layout => false)
+        end
+      end
+    end
   end
   
   def all
@@ -58,9 +69,32 @@ class SubscriptionsController < ApplicationController
   
   def create
     if logged_in?
-      
+      @person = logged_in_person
     elsif params[:person]
+      @account_creation_result = create_account_and_person()
+    end
+    
+    if @person
+      @plan = SubscriptionPlan.find(params[:subscription][:subscription_plan_id])
+      unless @plan.allow_public_signup
+        access_denied("Sorry, but that plan is not publicly accessible.  If you want to sign up for it, please contact support.")
+      end
       
+      if @plan.free?
+        redirect_to subscriptions_url
+      else
+        @payment_method = PaymentMethods::GoogleSubscription.create
+        
+        @subscription = Subscription.create :subscription_plan => @plan, :payment_method => @payment_method
+        @subscription.grant(@person)
+      
+        redirect_url = @subscription.payment_method.initiate(
+          "Thanks for choosing Journey!  Your subscription is being set up.  "+
+          "Feel free to <a href=\"#{url_for "/"}\">log on</a> and try it out!"
+        )
+        
+        redirect_to (redirect_url or subscriptions_url)
+      end
     end
   end
   
@@ -69,5 +103,9 @@ class SubscriptionsController < ApplicationController
     unless logged_in_person.permitted?("edit", Subscription)
       access_denied "Sorry, only subscription administrators are allowed to view that page."
     end
+  end
+  
+  def get_plans
+    @plans = SubscriptionPlan.find_all_by_allow_public_signup(true)
   end
 end

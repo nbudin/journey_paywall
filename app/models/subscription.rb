@@ -3,6 +3,7 @@ class Subscription < ActiveRecord::Base
   acts_as_permissioned :permission_names => [:edit, :create_questionnaires, :destroy]
   belongs_to :subscription_plan
   has_many :questionnaires
+  belongs_to :payment_method, :polymorphic => true, :dependent => :destroy
   #has_many :people, :through => :permissions, :conditions => "permission is null or permission = 'create_questionnaires'"
 
   def self.find_all_by_person(person, options={})
@@ -18,7 +19,7 @@ class Subscription < ActiveRecord::Base
   end
 
   def grace_period_ends_at
-    if subscription_plan
+    if subscription_plan and rebill_at
       subscription_plan.add_grace_period(rebill_at)
     else
       Time.at(0)
@@ -26,7 +27,7 @@ class Subscription < ActiveRecord::Base
   end
   
   def rebill_at
-    if subscription_plan
+    if subscription_plan and last_paid_at
       subscription_plan.add_rebill_period(last_paid_at)
     else
       Time.at(0)
