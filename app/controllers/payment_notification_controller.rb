@@ -39,7 +39,7 @@ class PaymentNotificationController < ApplicationController
       
       if non_recurring_items
         if @gs
-          @order = @gs.google_orders_find_or_create_by_google_order_number(notification.google_order_number)
+          @order = @gs.google_orders.find_or_create_by_google_order_number(notification.google_order_number)
         else
           @order = PaymentMethods::GoogleOrder.find_by_google_order_number(notification.google_order_number)
         end
