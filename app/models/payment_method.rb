@@ -3,7 +3,7 @@ module PaymentMethod
     c.class_eval do
       has_one :subscription, :as => :payment_method
       
-      def initiate(message=nil)
+      def initiate(options={})
         raise "This is an abstract method."
       end
       

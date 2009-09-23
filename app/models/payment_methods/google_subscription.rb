@@ -33,8 +33,8 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
     return frontend
   end
   
-  def initiate(message=nil)
-    checkout_cmd = create_google_checkout_cmd(self.class.frontend, message)
+  def initiate(options={})
+    checkout_cmd = create_google_checkout_cmd(self.class.frontend, options)
     
     if checkout_cmd
       response = checkout_cmd.send_to_google_checkout
@@ -44,21 +44,25 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
   
   protected
   
-  def request_payment_inner(amount)
-    recur_cmd = self.class.frontend.create_create_order_recurrence_request_command
-    
-    recur_cmd.google_order_number = google_order_number
-    recur_cmd.shopping_cart.create_item do |item|
+  def add_payment_item_to_cart(cart, amount)
+    cart.create_item do |item|
       item.name = "#{subscription.name} payment"
       item.unit_price = amount
       item.quantity = 1
     end
+  end
+  
+  def request_payment_inner(amount)
+    recur_cmd = self.class.frontend.create_create_order_recurrence_request_command
+    
+    recur_cmd.google_order_number = google_order_number
+    add_payment_item_to_cart(recur_cmd.shopping_cart, amount)
     
     response = recur_cmd.send_to_google_checkout
     google_orders.create :google_order_number => response.new_google_order_number, :amount => amount
   end
   
-  def create_google_checkout_cmd(frontend, message=nil)
+  def create_google_checkout_cmd(frontend, options={})
     checkout_cmd = frontend.create_checkout_command
     
     checkout_cmd.shopping_cart.create_item do |item|
@@ -79,7 +83,9 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
             when "monthly" then item_subscription.period = "MONTHLY"
             when "yearly" then item_subscription.period = "YEARLY"
           end
-          item_subscription.start_date = subscription.rebill_at
+          unless options[:bill_now]
+            item_subscription.start_date = subscription.rebill_at
+          end
           
           item_subscription.add_payment do |payment|
             payment.maximum_charge = subscription.subscription_plan.price
@@ -87,12 +93,16 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
         end
       end
       
-      if message
+      if options[:message]
         item.create_digital_content do |content|
           content.display_disposition = "OPTIMISTIC"
-          content.description = message
+          content.description = options[:message]
         end
       end
+    end
+    
+    if options[:bill_now]
+      add_payment_item_to_cart(checkout_cmd.shopping_cart, subscription.subscription_plan.price)
     end
     
     return checkout_cmd

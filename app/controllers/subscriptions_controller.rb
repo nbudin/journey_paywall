@@ -85,7 +85,7 @@ class SubscriptionsController < ApplicationController
       if @plan.free?
         redirect_to subscriptions_url
       else
-        @other_subscriptions = Subscription.find_all_by_person(@person)
+        @other_subscriptions = Subscription.find_all_by_person(@person, :conditions => "last_paid_at is not null")
         if @other_subscriptions.size == 0
           # give them a free trial
           @last_paid_at = Time.new.beginning_of_day + 1.day
@@ -99,8 +99,9 @@ class SubscriptionsController < ApplicationController
           @subscription.grant(@person)
       
           redirect_url = @subscription.payment_method.initiate(
-            "Thanks for choosing Journey!  Your subscription is being set up.  "+
-            "Feel free to <a href=\"#{url_for "/"}\">log on</a> and try it out!"
+            :message => "Thanks for choosing Journey!  Your subscription is being set up.  "+
+            "Feel free to <a href=\"#{url_for "/"}\">log on</a> and try it out!",
+            :bill_now => @last_paid_at.nil?
           )
         
           redirect_to (redirect_url or subscriptions_url)

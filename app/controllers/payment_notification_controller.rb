@@ -19,12 +19,10 @@ class PaymentNotificationController < ApplicationController
     logger.debug request.raw_post
         
     if notification.kind_of? Google4R::Checkout::NewOrderNotification
-      is_subscription = false
+      non_recurring_items = false
       
       notification.shopping_cart.items.each do |item|
         if item.private_data and item.private_data["subscription_id"]
-          is_subscription = true
-          
           @subscription = Subscription.find(item.private_data["subscription_id"])
           if @subscription.nil?
             return head :text => "No subscription with ID #{item.private_data["subscription_id"]}", :status => 404
@@ -34,13 +32,24 @@ class PaymentNotificationController < ApplicationController
           @gs.google_order_number = notification.google_order_number
           @gs.financial_order_state = notification.financial_order_state
           @gs.save
+        else
+          non_recurring_items = true
         end
       end 
       
-      unless is_subscription
-        @order = PaymentMethods::GoogleOrder.find_by_google_order_number(notification.google_order_number)
-        @order.financial_order_state = notification.financial_order_state
-        @order.save
+      if non_recurring_items
+        if @gs
+          @order = @gs.google_orders_find_or_create_by_google_order_number(notification.google_order_number)
+        else
+          @order = PaymentMethods::GoogleOrder.find_by_google_order_number(notification.google_order_number)
+        end
+        
+        if @order
+          @order.financial_order_state = notification.financial_order_state
+          @order.save
+        else
+          return head :text => "No record found with order number #{notification.google_order_number}", :status => 404
+        end
       end
     elsif notification.kind_of? Google4R::Checkout::OrderStateChangeNotification
       @gs = PaymentMethods::GoogleSubscription.find_by_google_order_number(notification.google_order_number)
@@ -55,15 +64,6 @@ class PaymentNotificationController < ApplicationController
         
         @order.financial_order_state = notification.new_financial_order_state
         @order.save
-      end
-    end
-    
-    if @gs
-      if @gs.subscription.expired?
-        if @gs.financial_order_state == "CHARGEABLE"
-          # auto-bill when it becomes chargeable
-          @gs.request_payment
-        end
       end
     end
     
