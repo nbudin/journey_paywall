@@ -72,6 +72,8 @@ class SubscriptionsController < ApplicationController
       @person = logged_in_person
     elsif params[:person]
       @account_creation_result = create_account_and_person()
+      @person = @account_creation_result[:person]
+      session[:person] = @person
     end
     
     if @person
@@ -83,17 +85,23 @@ class SubscriptionsController < ApplicationController
       if @plan.free?
         redirect_to subscriptions_url
       else
-        @payment_method = PaymentMethods::GoogleSubscription.create
+        @other_subscriptions = Subscription.find_all_by_person(@person)
+        @free_trial_days = @other_subscriptions.size > 0 ? 30 : 0
+        @rebill_at = Time.new.beginning_of_day + 1.day + @free_trial_days.days
         
-        @subscription = Subscription.create :subscription_plan => @plan, :payment_method => @payment_method
-        @subscription.grant(@person)
+        if params[:payment_method] == "google"
+          @payment_method = PaymentMethods::GoogleSubscription.create
+        
+          @subscription = Subscription.create :subscription_plan => @plan, :payment_method => @payment_method
+          @subscription.grant(@person)
       
-        redirect_url = @subscription.payment_method.initiate(
-          "Thanks for choosing Journey!  Your subscription is being set up.  "+
-          "Feel free to <a href=\"#{url_for "/"}\">log on</a> and try it out!"
-        )
+          redirect_url = @subscription.payment_method.initiate(
+            "Thanks for choosing Journey!  Your subscription is being set up.  "+
+            "Feel free to <a href=\"#{url_for "/"}\">log on</a> and try it out!"
+          )
         
-        redirect_to (redirect_url or subscriptions_url)
+          redirect_to (redirect_url or subscriptions_url)
+        end
       end
     end
   end
