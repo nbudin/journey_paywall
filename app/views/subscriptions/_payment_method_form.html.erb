@@ -39,6 +39,16 @@ table.confirmation td {
 
 <h2>Ready to check out!</h2>
 
+<% if @last_paid_at.nil? -%>
+  <div class="errors">
+    <p>
+      We're sorry, but you aren't eligible for a free trial, since you already have
+      <%= pluralize @other_subscriptions.size, "other subscription" %>.  If you believe
+      this to be a mistake, please <%= link_to "contact support", "/support" %>.
+    </p>
+  </div>
+<% end -%>
+
 <p>Just to confirm, the details of your subscription are:</p>
 
 <table class="confirmation">
@@ -61,10 +71,12 @@ table.confirmation td {
     <th>Price:</th>
     <td>
       <%= @plan.human_price %><br/>
-      <% if @free_trial_days > 0 -%>
-        First <%= pluralize @free_trial_days, "day" %> free<br/>
+      <% if @last_paid_at -%>
+        <%= pluralize ((@subscription.rebill_at - Time.new) / 1.day).floor, "day" %> free trial<br/>
+        Billing starts <%= @subscription.rebill_at.strftime("%A, %B %d, %Y") %>
+      <% else -%>
+        Billing starts immediately
       <% end -%>
-      Billing starts <%= @rebill_at.strftime("%A, %B %d, %Y") %>
     </td>
   </tr>
 </table>

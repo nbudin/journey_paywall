@@ -86,13 +86,16 @@ class SubscriptionsController < ApplicationController
         redirect_to subscriptions_url
       else
         @other_subscriptions = Subscription.find_all_by_person(@person)
-        @free_trial_days = @other_subscriptions.size > 0 ? 30 : 0
-        @rebill_at = Time.new.beginning_of_day + 1.day + @free_trial_days.days
+        if @other_subscriptions.size == 0
+          # give them a free trial
+          @last_paid_at = Time.new.beginning_of_day + 1.day
+        end
+        
+        @subscription = Subscription.new :subscription_plan => @plan, :last_paid_at => @last_paid_at
         
         if params[:payment_method] == "google"
-          @payment_method = PaymentMethods::GoogleSubscription.create
-        
-          @subscription = Subscription.create :subscription_plan => @plan, :payment_method => @payment_method
+          @subscription.payment_method = PaymentMethods::GoogleSubscription.create
+          @subscription.save
           @subscription.grant(@person)
       
           redirect_url = @subscription.payment_method.initiate(
