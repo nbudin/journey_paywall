@@ -43,10 +43,10 @@ class PaymentNotificationController < ApplicationController
         @order.save
       end
     elsif notification.kind_of? Google4R::Checkout::OrderStateChangeNotification
-      @subscription = PaymentMethods::GoogleSubscription.find_by_google_order_number(notification.google_order_number)
-      if @subscription
-        @subscription.financial_order_state = notification.new_financial_order_state
-        @subscription.save
+      @gs = PaymentMethods::GoogleSubscription.find_by_google_order_number(notification.google_order_number)
+      if @gs
+        @gs.financial_order_state = notification.new_financial_order_state
+        @gs.save
       else
         @order = PaymentMethods::GoogleOrder.find_by_google_order_number(notification.google_order_number)
         if @order.nil?
@@ -58,11 +58,11 @@ class PaymentNotificationController < ApplicationController
       end
     end
     
-    if @subscription
-      if @subscription.expired?
-        if @subscription.financial_order_state == "CHARGEABLE"
+    if @gs
+      if @gs.subscription.expired?
+        if @gs.financial_order_state == "CHARGEABLE"
           # auto-bill when it becomes chargeable
-          @subscription.payment_method.request_payment
+          @gs.request_payment
         end
       end
     end
