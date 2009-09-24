@@ -4,7 +4,8 @@ class Subscription < ActiveRecord::Base
   belongs_to :subscription_plan
   has_many :questionnaires
   belongs_to :payment_method, :polymorphic => true, :dependent => :destroy
-  #has_many :people, :through => :permissions, :conditions => "permission is null or permission = 'create_questionnaires'"
+  
+  named_scope :active, :conditions => "NOT (cancelled_at < now())"
 
   def self.find_all_by_person(person, options={})
     Permission.find(:all, options.update(:conditions => ["permissioned_type = 'Subscription' and person_id = ?", person.id])).collect do |perm|
@@ -32,6 +33,10 @@ class Subscription < ActiveRecord::Base
     else
       Time.new.beginning_of_day
     end
+  end
+  
+  def cancelled?
+    cancelled_at < Time.new
   end
   
   def expired?
