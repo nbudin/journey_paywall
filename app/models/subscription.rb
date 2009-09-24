@@ -5,7 +5,7 @@ class Subscription < ActiveRecord::Base
   has_many :questionnaires
   belongs_to :payment_method, :polymorphic => true, :dependent => :destroy
   
-  named_scope :active, :conditions => "NOT (cancelled_at < now())"
+  named_scope :active, :conditions => "cancelled_at is null or cancelled_at > now()"
 
   def self.find_all_by_person(person, options={})
     Permission.find(:all, options.update(:conditions => ["permissioned_type = 'Subscription' and person_id = ?", person.id])).collect do |perm|
