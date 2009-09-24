@@ -19,8 +19,13 @@ namespace :journey_paywall do
   desc "attempt to charge all subscriptions for which payment is due"
   task :charge_subscriptions => :environment do
     Subscription.active.all.each do |s|
-      if s.expired? and s.payment_method
-        s.payment_method.request_payment
+      begin
+        if s.expired? and s.payment_method
+          s.payment_method.request_payment
+        end
+      rescue Exception => e
+        RAILS_DEFAULT_LOGGER.error "Error while requesting payment for #{s.sid}:"
+        RAILS_DEFAULT_LOGGER.error e
       end
     end
   end
