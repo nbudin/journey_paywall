@@ -24,8 +24,8 @@ namespace :journey_paywall do
           s.payment_method.request_payment
         end
       rescue Exception => e
-        RAILS_DEFAULT_LOGGER.error "Error while requesting payment for #{s.sid}:"
-        RAILS_DEFAULT_LOGGER.error e
+        $stderr.puts "Error while requesting payment for #{s.sid}:"
+        $stderr.puts e
       end
     end
   end
