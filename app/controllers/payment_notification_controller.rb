@@ -53,18 +53,21 @@ class PaymentNotificationController < ApplicationController
       end
     elsif notification.kind_of? Google4R::Checkout::OrderStateChangeNotification
       @gs = PaymentMethods::GoogleSubscription.find_by_google_order_number(notification.google_order_number)
+      @order = PaymentMethods::GoogleOrder.find_by_google_order_number(notification.google_order_number)
+
       if @gs
         @gs.financial_order_state = notification.new_financial_order_state
         @gs.save
-      else
-        @order = PaymentMethods::GoogleOrder.find_by_google_order_number(notification.google_order_number)
-        if @order.nil?
-          return head :text => "No record found with order number #{notification.google_order_number}", :status => 404
-        end
-        
+      end
+      
+      if @order
         @order.financial_order_state = notification.new_financial_order_state
         @order.save
       end
+
+      if @gs.nil? and @order.nil?
+        return head :text => "No record found with order number #{notification.google_order_number}", :status => 404
+      end        
     end
     
     notification_acknowledgement = Google4R::Checkout::NotificationAcknowledgement.new(notification)
