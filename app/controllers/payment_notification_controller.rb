@@ -45,6 +45,7 @@ class PaymentNotificationController < ApplicationController
         end
         
         if @order
+          @order.amount = notification.order_total
           @order.financial_order_state = notification.financial_order_state
           @order.save
         else
