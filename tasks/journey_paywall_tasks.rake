@@ -15,4 +15,13 @@ namespace :journey_paywall do
     ActiveRecord::Migrator.down(File.expand_path(File.dirname(__FILE__) + "/../db/migrate"))
     Rake::Task["db:schema:dump"].invoke if ActiveRecord::Base.schema_format == :ruby
   end
+  
+  desc "attempt to charge all subscriptions for which payment is due"
+  task :charge_subscriptions => :environment do
+    Subscription.active.all.each do |s|
+      if s.expired? and s.payment_method
+        s.payment_method.request_payment
+      end
+    end
+  end
 end
