@@ -36,7 +36,7 @@ class Subscription < ActiveRecord::Base
   end
   
   def cancelled?
-    cancelled_at < Time.new
+    cancelled_at and cancelled_at < Time.new
   end
   
   def expired?
@@ -80,10 +80,13 @@ class Subscription < ActiveRecord::Base
     if people.size == 1
       sname << "#{people.first.name}'s "
     end
+    if cancelled?
+      sname << "Cancelled"
+    elsif expired?
+      sname << "Expired"
+    end
     if subscription_plan
       sname << "#{subscription_plan.name}"
-    else
-      sname << "Expired/cancelled"
     end
     sname << " subscription (#{sid})"
   end

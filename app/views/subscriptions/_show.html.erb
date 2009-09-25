@@ -29,11 +29,12 @@
 		  Never expires
 		<% else -%>
 	   	   <% if subscription.expired? -%>
-		      <span style="font-weight: bold; font-color: red;">
+		      <span style="font-weight: bold;">
 		          <% if subscription.past_grace_period? %>
 			         Expired
 		          <% else -%>
-			         Payment overdue; subscription will expire on <%= subscription.grace_period_ends_at %>
+			         Payment due; subscription will expire on
+					 <%= subscription.grace_period_ends_at.strftime("%A, %B %d, %Y") %>
 			     <% end -%>
 	          </span>
 		  <% else -%>
