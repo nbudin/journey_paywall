@@ -81,9 +81,9 @@ class Subscription < ActiveRecord::Base
       sname << "#{people.first.name}'s "
     end
     if cancelled?
-      sname << "Cancelled"
+      sname << "Cancelled "
     elsif expired?
-      sname << "Expired"
+      sname << "Expired "
     end
     if subscription_plan
       sname << "#{subscription_plan.name}"
