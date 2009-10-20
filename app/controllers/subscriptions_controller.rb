@@ -71,9 +71,10 @@ class SubscriptionsController < ApplicationController
     if logged_in?
       @person = logged_in_person
     elsif params[:person]
-      @account_creation_result = create_account_and_person()
-      @person = @account_creation_result[:person]
-      session[:person] = @person
+      create_account_and_person()
+      if @person
+        session[:person] = @person
+      end
     end
     
     if @person

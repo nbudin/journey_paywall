@@ -1,7 +1,7 @@
 <h1>New subscription</h1>
 
 <div class="propertypage">
-  <% ae_form_for("person", @person, :url => subscriptions_url,
+  <% form_for("person", @person, :url => subscriptions_url,
 	:html => {:id => 'signup_form'}) do |f| -%>
 	
 	<%= hidden_field_tag "subscription[subscription_plan_id]", params[:subscription][:subscription_plan_id] %>
@@ -18,6 +18,8 @@
       	<%= link_to "If you already have a Journey account, click here to log in.", :controller => "auth", :action => "login",
     		:return_to => subscriptions_url %>
       </p>
+	  
+	  
   	  <%= render :partial => 'account/signup_form', :locals => { :f => f } %>
   	<% end -%>
   <% end -%>
