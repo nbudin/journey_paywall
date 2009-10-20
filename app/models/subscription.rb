@@ -35,7 +35,7 @@ class Subscription < ActiveRecord::Base
   end
   
   def expired?
-    last_paid_at.nil? or rebill_at < Time.new
+    !forever? and (last_paid_at.nil? or rebill_at < Time.new)
   end
 
   def past_grace_period?
