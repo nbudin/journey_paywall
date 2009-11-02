@@ -12,6 +12,8 @@ Journey::QuestionnaireExtensions.register_extension(JourneyPaywall::Questionnair
 Journey::UserOptions.add_logged_out_option("Subscribe", {:controller => "subscriptions", :action => "index"})
 Journey::UserOptions.add_logged_in_option("Subscription", {:controller => "subscriptions", :action => "index"})
 
+Journey::SiteOptions.default_layout = "journey_with_paywall"
+
 yamlpath = "#{RAILS_ROOT}/config/journey_paywall.yml"
 begin
   JourneyPaywall.configuration = YAML.load_file(yamlpath)
