@@ -8,7 +8,9 @@ class Subscription < ActiveRecord::Base
   named_scope :active, :conditions => "cancelled_at is null or cancelled_at > now()"
 
   def self.find_all_by_person(person, options={})
-    Permission.find(:all, options.update(:conditions => ["permissioned_type = 'Subscription' and person_id = ?", person.id])).collect do |perm|
+    Permission.find(:all,
+                    options.update(:conditions => ["permissioned_type = 'Subscription' and person_id = ?", person.id],
+                                   :include => :permissioned)).collect do |perm|
       perm.permissioned
     end.uniq.compact
   end

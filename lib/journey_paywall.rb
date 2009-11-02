@@ -22,7 +22,7 @@ module JourneyPaywall
           if subscrs.size == 0
             "To publish this survey, you'll need a paid Journey subscription."
           else
-            unless Subscription.find_all_by_person(person).any? { |subscr|
+            unless subscrs.any? { |subscr|
               not subscr.questionnaire_over_limit?(Questionnaire.new)
             }
               "You've hit your subscription's limit on simultaneously published surveys!  To 
