@@ -18,7 +18,8 @@ class PaymentNotificationController < ApplicationController
     
     logger.debug request.raw_post
         
-    if notification.kind_of? Google4R::Checkout::NewOrderNotification
+    case notification
+    when Google4R::Checkout::NewOrderNotification then
       non_recurring_items = false
       
       notification.shopping_cart.items.each do |item|
@@ -52,7 +53,7 @@ class PaymentNotificationController < ApplicationController
           return head :text => "No record found with order number #{notification.google_order_number}", :status => 404
         end
       end
-    elsif notification.kind_of? Google4R::Checkout::OrderStateChangeNotification
+    when Google4R::Checkout::OrderStateChangeNotification then
       @gs = PaymentMethods::GoogleSubscription.find_by_google_order_number(notification.google_order_number)
       @order = PaymentMethods::GoogleOrder.find_by_google_order_number(notification.google_order_number)
 
@@ -68,7 +69,22 @@ class PaymentNotificationController < ApplicationController
 
       if @gs.nil? and @order.nil?
         return head :text => "No record found with order number #{notification.google_order_number}", :status => 404
-      end        
+      end
+    when Google4R::Checkout::CancelledSubscriptionNotification then
+      @gs = PaymentMethods::GoogleSubscription.find_by_google_order_number(notification.google_order_number)
+      if @gs.nil?
+        return head :text => "No record found with order number #{notification.google_order_number}", :status => 404  
+      end
+      
+      @subscription = @gs.subscription
+      if @subscription.nil?
+        return head :text => "No subscription attached to GoogleSubscription #{@gs.id}", :status => 500
+      end
+        
+      if @gs
+        @subscription.cancelled_at = Time.new
+        @subscription.save
+      end
     end
     
     notification_acknowledgement = Google4R::Checkout::NotificationAcknowledgement.new(notification)
