@@ -1,0 +1,21 @@
+<h2>My Subscriptions</h2>
+
+<% @subscriptions = Subscription.find_all_by_person(logged_in_person).select { |s| !s.cancelled? and !s.expired? } -%>
+
+<% if @subscriptions.size == 0 -%>
+  <p>You don't have a Journey subscription.</p>
+<% else -%>
+  <ul>
+    <% @subscriptions.each do |subscription| -%>
+      <li class="subscription">
+        <%= link_to subscription.name, subscription_path(subscription) %>
+      </li>
+    <% end -%>
+  </ul>
+<% end -%>
+
+<div class="footer">
+  <% link_to subscriptions_path, :class => "bigbutton" do -%>
+    Subscription details &raquo;
+  <% end -%>
+</div>
