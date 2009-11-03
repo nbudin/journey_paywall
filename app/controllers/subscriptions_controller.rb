@@ -14,6 +14,10 @@ class SubscriptionsController < ApplicationController
     end
   end
   
+  def show
+    @subscription = Subscription.find(params[:id])
+  end
+  
   def new
     respond_to do |format|
       format.html { render :partial => "new", :layout => false }
@@ -55,7 +59,7 @@ class SubscriptionsController < ApplicationController
     @subscriptions = Subscription.paginate(:page => params[:page], :order => 'id',
       :include => ['questionnaires', 'permissions', 'subscription_plan'],
       :conditions => [cond_sql.join(" and ")] + conds,
-      :per_page => 4)
+      :per_page => 10)
       
     respond_to do |format|
       format.html

@@ -6,9 +6,9 @@
 	<% if @my_subscriptions.size > 0 -%>
 		<h2>My Journey <%= @my_subscriptions.size == 1 ? "subscription" : "subscriptions" %></h2>
 	
-    	<% @my_subscriptions.each do |subscr| -%>
-	       <%= render :partial => "show", :locals => {:subscription => subscr} %>
-    	<% end -%>
+		<ul style="list-style-type: none; padding-left: 1em; margin-left: 0">
+    	  <%= render :partial => "subscription", :collection => @my_subscriptions %>
+		</ul>
 	
 		<h2>Add an additional subscription</h2>
 	<% else -%>

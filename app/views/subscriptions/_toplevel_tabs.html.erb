@@ -1,8 +1,8 @@
 <% if logged_in? and logged_in_person.permitted?(Subscription, "edit") -%>
 	<ul class="tabstrip">
-		<%= tabstrip_li "My Subscription", subscriptions_path, :controller => 'subscriptions', :only => ['index'] %>
+		<%= tabstrip_li "My Subscription", subscriptions_path, :controller => 'subscriptions', :only => ['index', 'show'] %>
  	    <%= tabstrip_li "All Subscriptions", all_subscriptions_path, 
-                        :controller => 'subscriptions', :except => ['index'] %>
+                        :controller => 'subscriptions', :except => ['index', 'show'] %>
 		<% if logged_in? and logged_in_person.permitted?(SubscriptionPlan, "edit") -%>
 		   <%= tabstrip_li "Plans", subscription_plans_path, :controller => 'subscription_plans' %>
 		<% end -%>
