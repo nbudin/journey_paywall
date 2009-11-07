@@ -3,6 +3,7 @@ class SubscriptionPlansController < ApplicationController
   require_login
 
   before_filter :check_subscription_admin
+  before_filter :set_globalnav_links
   
   def index
     @subscription_plans = SubscriptionPlan.all
@@ -64,5 +65,12 @@ class SubscriptionPlansController < ApplicationController
     unless logged_in_person.permitted?("edit", SubscriptionPlan)
       access_denied "Sorry, only subscription plan administrators are allowed to view that page."
     end
+  end
+  
+  def set_globalnav_links
+    @globalnav_links = {
+      "Subscriptions" => subscriptions_path,
+      "Plans" => subscription_plans_path
+    }
   end
 end

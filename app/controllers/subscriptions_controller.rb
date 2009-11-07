@@ -4,6 +4,7 @@ class SubscriptionsController < ApplicationController
   
   before_filter :check_subscription_admin, :only => ['all']
   before_filter :get_plans
+  before_filter :set_globalnav_links
   rest_permissions
   
   def index
@@ -124,5 +125,9 @@ class SubscriptionsController < ApplicationController
   
   def get_plans
     @plans = SubscriptionPlan.find_all_by_allow_public_signup(true)
+  end
+  
+  def set_globalnav_links
+    @globalnav_links = { "Subscriptions" => subscriptions_path }
   end
 end
