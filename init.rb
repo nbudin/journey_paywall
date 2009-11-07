@@ -12,7 +12,10 @@ Journey::QuestionnaireExtensions.register_extension(JourneyPaywall::Questionnair
 Journey::UserOptions.add_logged_out_option("Subscribe", {:controller => "subscriptions", :action => "index"})
 Journey::UserOptions.add_logged_in_option("Subscription", {:controller => "subscriptions", :action => "index"})
 
-Journey::Dashboard.add_dashbox("subscriptions/dashbox", :right)
+begin
+  Journey::Dashboard.add_dashbox("subscriptions/dashbox", :right)
+rescue NameError
+end
 
 Journey::SiteOptions.default_layout = "journey_with_paywall"
 
