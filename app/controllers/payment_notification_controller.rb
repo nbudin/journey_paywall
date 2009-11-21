@@ -72,16 +72,14 @@ class PaymentNotificationController < ApplicationController
       end
     when Google4R::Checkout::CancelledSubscriptionNotification then
       @gs = PaymentMethods::GoogleSubscription.find_by_google_order_number(notification.google_order_number)
-      if @gs.nil?
-        return head :text => "No record found with order number #{notification.google_order_number}", :status => 404  
-      end
       
-      @subscription = @gs.subscription
-      if @subscription.nil?
-        return head :text => "No subscription attached to GoogleSubscription #{@gs.id}", :status => 500
-      end
-        
+      #TODO implement some kind of notification just to the admin if things fail; don't send an error back to Google
       if @gs
+        @subscription = @gs.subscription
+        if @subscription.nil?
+          return head :text => "No subscription attached to GoogleSubscription #{@gs.id}", :status => 500
+        end
+        
         @subscription.cancelled_at = Time.new
         @subscription.save
       end
