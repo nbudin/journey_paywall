@@ -14,7 +14,7 @@ Journey::UserOptions.add_logged_in_option("Subscription", {:controller => "subsc
 
 begin
   Journey::Dashboard.add_dashbox("subscriptions/dashbox", :right)
-  Journey::SiteOptions.default_layout = "journey_with_paywall"
+  Journey::SiteOptions.add_additional_stylesheet "subscriptions"
 rescue
 end
 
