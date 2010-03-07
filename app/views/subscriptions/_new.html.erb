@@ -1,92 +1,18 @@
-<style type="text/css">
-	.plans {
-		max-width: 60em;
-		text-align: center;
-	}
-	.plan {
-		display: inline-block; 
-		border: 1px black solid; 
-		background-color: white;
-		padding: 0.5em;
-		text-align: center;
-		border-radius: 0.5em;
-		-moz-border-radius: 0.5em;
-		-webkit-border-radius: 0.5em;
-		width: 18em;
-		margin: 0.25em;
-	}
-	
-	.plan h3 {
-		margin-top: 0;
-		font-size: 150%;
-		background-color: #bad032;
-		padding: 0.25em;
-		border-radius: 0.25em;
-		-moz-border-radius: 0.25em;
-		-webkit-border-radius: 0.25em;
-	}
-	
-	.plan ul {
-		text-align: left;
-		list-style-type: square;
-		margin-left: 0;
-		padding-left: 1em;
-	}
-	
-	.plan .price {
-		font-style: italic;
-		margin-bottom: 0.5em;
-		font-size: 110%;
-	}
-	
-	button.signup {
-		background-color: #080; 
-		color: white; 
-		cursor: pointer;
-		border: 2px #bad032 solid;
-		border-radius: 10px; 
-		-moz-border-radius: 10px; 
-		-webkit-border-radius: 10px;
-	}
-	
-	button.signup h4 {
-		font-size: 125%; 
-		font-weight: bold;
-		margin: 2px;
-	}
-	
-	button.signup h5 {
-		text-transform: uppercase;
-		margin: 2px;
-	}
-</style>
-
 <% if @plans.size > 0 -%>
 	<p>Want to create your own online surveys?  We can help.  Journey is simple, flexible, and hassle-free.  Choose a plan
   	from the options below:</p>
 
 	<div class="plans">
 		<% @plans.each do |plan| -%>
-		  <div class="plan">
-		  	<h3><%=h plan.name%></h3>
-			
-			<ul class="limits">
-				<li><%= open_questionnaires_limit(plan)%></li>
-				<li><%= responses_per_month_limit(plan)%></li>
-			</ul>
-			
-			<div class="price">
-				<%= plan.human_price %>
-			</div>
-			
-			<% form_for "subscription", :url => subscriptions_url do |f| %>
-				<%= f.hidden_field :subscription_plan_id, :value => plan.id %>
-				<button class="signup">
-					<h4>Sign up</h4>
-					<h5>First 30 days free!</h5>
-				</button>
-			<% end %>
-		  </div>
+		  <% subscription_plan_ad(plan) do -%>		
+  			<% form_for "subscription", :url => subscriptions_url do |f| %>
+  				<%= f.hidden_field :subscription_plan_id, :value => plan.id %>
+  				<button class="signup">
+  					<h4>Sign up</h4>
+  					<h5>First 30 days free!</h5>
+  				</button>
+  			<% end %>
+  		<% end -%>
 		<% end -%>
 	</div>
 	

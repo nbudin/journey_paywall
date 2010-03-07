@@ -48,6 +48,9 @@
 			<td><%= f.check_box :allow_public_signup %></td>
 		</tr>
 		<tr>
+		  <th>Advertising blurb</th>
+		  <td><%= f.text_area :blurb %></td>
+		<tr>
 			<td colspan="2"><h3>Limits</h3></td>
 		</tr>
 		<tr>
@@ -86,6 +89,12 @@
 			<th>Price per billing period</th>
 			<td>
 				$<%= f.text_field :price_us_dollars, :size => 5 %>
+			</td>
+		</tr>
+		<tr>
+			<th>Additional startup cost</th>
+			<td>
+				$<%= f.text_field :startup_cost_us_dollars, :size => 5 %>
 			</td>
 		</tr>
 		<tr>

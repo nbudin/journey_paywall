@@ -1,0 +1,17 @@
+<% if @subscriptions.size > 0 -%>
+  <% @subscriptions.each do |subscr| -%>
+    <li>
+      <%= f.radio_button "subscription_id", subscr.id %>
+      <%= f.label "subscription_id", "Use my subscription #{subscr.name}", :value => subscr.id %>
+    </li>
+  <% end -%>
+  <li>
+    <%= f.radio_button "subscription_id", "new" %>
+    <%= f.label "subscription_id", "Set up a separate subscription for this survey", :value => "new" %>
+  </li>
+<% else -%>
+  <li>
+    <%= f.radio_button "subscription_id", "new" %>
+    <%= f.label "subscription_id", "Subscribe to a Journey monthly plan", :value => "new" %>
+  </li>
+<% end -%>

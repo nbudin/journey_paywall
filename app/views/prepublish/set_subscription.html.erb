@@ -1,0 +1,21 @@
+<%= render :partial => "publish/toolbar" %>
+
+<div class="propertypage" style="padding: 0;">
+  <h1>Choose a Subscription Plan</h1>
+  
+  <p>Here are the plans we currently offer.  Choose one, and you'll be all set to publish your survey!</p>
+  
+  <div class="plans">
+    <% @subscription_plans.each do |plan| -%>
+      <% subscription_plan_ad(plan) do -%>
+        <% form_for @questionnaire, :url => { :controller => "prepublish", :action => "set_subscription", :method => :put } do |f| %>
+          <%= f.hidden_field "subscription_id", :value => "new" %>
+          <button class="signup">
+  					<h4>Choose <%= plan.name %></h4>
+  					<h5>First 30 days free!</h5>
+  				</button>
+        <% end -%>
+      <% end -%>
+    <% end -%>
+  </div>
+</div>

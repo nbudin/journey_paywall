@@ -127,4 +127,8 @@ class Subscription < ActiveRecord::Base
       return others >= limit
     end
   end
+  
+  def questionnaire_specific?
+    subscription_plan.try(:questionnaire_specific?)
+  end
 end
