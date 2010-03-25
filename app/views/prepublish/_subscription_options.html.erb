@@ -2,7 +2,11 @@
   <% @subscriptions.each do |subscr| -%>
     <li>
       <%= f.radio_button "subscription_id", subscr.id %>
-      <%= f.label "subscription_id", "Use my subscription #{subscr.name}", :value => subscr.id %>
+      <% if subscr.expired? -%>
+        <%= f.label "subscription_id", "Reactivate my subscription \"#{subscr.name}\"", :value => subscr.id %>
+      <% else -%>
+        <%= f.label "subscription_id", "Use my subscription \"#{subscr.name}\"", :value => subscr.id %>
+      <% end -%>
     </li>
   <% end -%>
   <li>

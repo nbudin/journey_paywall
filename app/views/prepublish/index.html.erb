@@ -31,7 +31,9 @@
             <%= render :partial => "subscription_options", :locals => { :f => f } %>
           </ul>
         <% else -%>
-          <p>If you'd like to change that, you can do so once it is published.</p>
+          <ul style="list-style-type: none;">
+            <%= render :partial => "subscription_options", :locals => { :f => f } %>
+          </ul>
         <% end -%>
       <% end -%>
     <% else -%>
