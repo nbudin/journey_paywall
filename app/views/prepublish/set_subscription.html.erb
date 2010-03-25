@@ -8,12 +8,13 @@
   <div class="plans">
     <% @subscription_plans.each do |plan| -%>
       <% subscription_plan_ad(plan) do -%>
-        <% form_for @questionnaire, :url => { :controller => "prepublish", :action => "set_subscription", :method => :put } do |f| %>
-          <%= f.hidden_field "subscription_id", :value => "new" %>
+        <% form_for "subscription", :url => subscriptions_url do |f| %>
+          <%= f.hidden_field "subscription_plan_id", :value => plan.id %>
+          <%= hidden_field_tag "return_to", url_for(:action => "set_subscription", :only_path => false) %>
           <button class="signup">
-  					<h4>Choose <%= plan.name %></h4>
-  					<h5>First 30 days free!</h5>
-  				</button>
+            <h4>Choose <%= plan.name %></h4>
+            <h5>First 30 days free!</h5>
+          </button>
         <% end -%>
       <% end -%>
     <% end -%>

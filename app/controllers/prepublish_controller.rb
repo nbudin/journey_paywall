@@ -8,6 +8,25 @@ class PrepublishController < ApplicationController
   end
   
   def set_subscription
+    subscr_id = params[:subscription_id] || params[:questionnaire][:subscription_id]
+    if subscr_id and subscr_id != 'new'
+      @subscription = Subscription.find(subscr_id)
+      unless @subscription && logged_in_person.permitted?(@subscription, "create_questionnaires")
+        redirect_to :action => "index"
+        return
+      end
+
+      @questionnaire.subscription = @subscription
+      if @questionnaire.save
+        redirect_to :controller => "publish", :questionnaire_id => @questionnaire, :action => "settings"
+        return
+      else
+        self.index
+        render :action => "index"
+        return
+      end
+    end
+
     @subscription_plans = SubscriptionPlan.find_all_by_allow_public_signup(true)
   end
   

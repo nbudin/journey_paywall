@@ -3,7 +3,8 @@
 <div class="propertypage">
   <% form_for("person", @person, :url => subscriptions_url,
 	:html => {:id => 'signup_form'}) do |f| -%>
-	
+
+        <%= hidden_field_tag "return_to", params[:return_to] %>
 	<%= hidden_field_tag "subscription[subscription_plan_id]", params[:subscription][:subscription_plan_id] %>
 
   <% if @person -%>
