@@ -95,7 +95,7 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
       
       if options[:message]
         item.create_digital_content do |content|
-          content.display_disposition = "OPTIMISTIC"
+          content.display_disposition = "PESSIMISTIC"
           content.description = options[:message]
         end
       end

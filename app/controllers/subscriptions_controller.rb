@@ -73,6 +73,8 @@ class SubscriptionsController < ApplicationController
   end
   
   def create
+    
+
     if logged_in?
       @person = logged_in_person
     elsif params[:person]
