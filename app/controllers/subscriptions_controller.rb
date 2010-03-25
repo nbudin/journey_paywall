@@ -88,30 +88,36 @@ class SubscriptionsController < ApplicationController
         access_denied("Sorry, but that plan is not publicly accessible.  If you want to sign up for it, please contact support.")
       end
       
-      if @plan.free?
-        redirect_to subscriptions_url
-      else
+      unless @plan.free?
         @other_subscriptions = Subscription.find_all_by_person(@person, :conditions => "last_paid_at is not null")
         if @other_subscriptions.size == 0
           # give them a free trial
           @last_paid_at = Time.new.beginning_of_day + 1.day
         end
+      end
         
-        @subscription = Subscription.new :subscription_plan => @plan, :last_paid_at => @last_paid_at
+      @subscription = Subscription.create :subscription_plan => @plan, :last_paid_at => @last_paid_at
         
-        if params[:payment_method] == "google"
-          @subscription.payment_method = PaymentMethods::GoogleSubscription.create
-          @subscription.save
-          @subscription.grant(@person)
-      
-          redirect_url = @subscription.payment_method.initiate(
-            :message => "Thanks for choosing Journey!  Your subscription is being set up.  "+
-            "Feel free to <a href=\"#{url_for "/"}\">log on</a> and try it out!",
-            :bill_now => @last_paid_at.nil?
-          )
-        
-          redirect_to (redirect_url or subscriptions_url)
-        end
+      finished_url = params[:return_to] || subscriptions_url
+      # add in the subscription ID
+      uri = URI.parse(finished_url)
+      uri.query = Rack::Utils.build_query(Rack::Utils.parse_query(uri.query).update(:subscription_id => @subscription.id))
+      finished_url = uri.to_s
+
+      if params[:payment_method] == "google"
+        @subscription.payment_method = PaymentMethods::GoogleSubscription.create
+        @subscription.save
+        @subscription.grant(@person)
+
+        redirect_url = @subscription.payment_method.initiate(
+          :message => "Thanks for choosing Journey!  Your subscription is being set up.  "+
+          "<a href=\"#{finished_url}\">Click here to go back to Journey and get started!</a>",
+          :bill_now => @last_paid_at.nil?
+        )
+
+        redirect_to (redirect_url || subscriptions_url)
+      elsif @subscription.free?
+        redirect_to finished_url
       end
     end
   end
