@@ -37,6 +37,8 @@
 					 <%= @subscription.grace_period_ends_at.strftime("%A, %B %d, %Y") %>
 			     <% end -%>
 	          </span>
+		  <% elsif @subscription.cancelled? -%>
+		      Cancelled <%= @subscription.cancelled_at %>
 		  <% else -%>
 		      Next payment due <%= @subscription.rebill_at.strftime("%A, %B %d, %Y") %>
 		  <% end -%>

@@ -1,3 +1,17 @@
-<li class="subscription">
+<li class="<%= subscription_class subscription %>">
+  <div class="alerts">
+    <% if subscription.expired? -%>
+      Payment was due
+      <% if subscription.rebill_at.beginning_of_day == Time.new.beginning_of_day -%>
+        today
+      <% else -%>
+        <%= pluralize(((Time.new - subscription.rebill_at) / 1.day).floor, "day") %> ago
+      <% end -%>
+    <% end -%>
+    
+    <% if subscription.cancelled? -%>
+      Cancelled <%= subscription.cancelled_at.strftime("%A, %B %d, %Y") %>
+    <% end -%>
+  </div>
   <%= link_to subscription.name, subscription_path(subscription) %>
 </li>

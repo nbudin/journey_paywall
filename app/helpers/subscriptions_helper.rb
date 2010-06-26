@@ -17,4 +17,11 @@ module SubscriptionsHelper
       html << yield
     end)
   end
+  
+  def subscription_class(subscription)
+    c = "subscription"
+    c << " expired" if subscription.expired?
+    c << " cancelled" if subscription.cancelled?
+    return c
+  end
 end

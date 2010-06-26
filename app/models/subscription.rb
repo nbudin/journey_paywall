@@ -42,7 +42,7 @@ class Subscription < ActiveRecord::Base
   end
   
   def expired?
-    !forever? and (last_paid_at.nil? or rebill_at < Time.new)
+    !forever? and !cancelled? and (last_paid_at.nil? or rebill_at < Time.new)
   end
 
   def past_grace_period?
@@ -81,11 +81,6 @@ class Subscription < ActiveRecord::Base
     sname = ""
     if people.size == 1
       sname << "#{people.first.name}'s "
-    end
-    if cancelled?
-      sname << "Cancelled "
-    elsif expired?
-      sname << "Expired "
     end
     if subscription_plan
       sname << "#{subscription_plan.name}"
