@@ -2,7 +2,8 @@ class PaymentMethods::GoogleOrder < ActiveRecord::Base
   # this isn't a payment method.  it is a model used internally by PaymentMethods::GoogleSubscription.
   
   belongs_to :google_subscription
-  composed_of :amount, :class_name => "Money", :mapping => [%w(cents cents), %w(currency currency)]
+  composed_of :amount, :class_name => "Money", :mapping => [%w(cents cents), %w(currency currency_as_string)],
+      :constructor => Proc.new { |cents, currency| Money.new(cents || 0, currency || Money.default_currency) }
   
   def financial_order_state=(new_state)
     old_state = financial_order_state
