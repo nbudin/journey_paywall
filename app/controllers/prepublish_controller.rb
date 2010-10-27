@@ -8,7 +8,7 @@ class PrepublishController < ApplicationController
   end
   
   def set_subscription
-    subscr_id = params[:subscription_id] || params[:questionnaire][:subscription_id]
+    subscr_id = params[:subscription_id] || params[:questionnaire].try(:[], :subscription_id)
     if subscr_id and subscr_id != 'new'
       @subscription = Subscription.find(subscr_id)
       unless @subscription && logged_in_person.permitted?(@subscription, "create_questionnaires")
