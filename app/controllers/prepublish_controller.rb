@@ -5,13 +5,14 @@ class PrepublishController < ApplicationController
   
   def index
     @subscriptions = Subscription.find_all_by_person(logged_in_person)
+    @subscriptions << @questionnaire.subscription if @questionnaire.subscription
   end
   
   def set_subscription
     subscr_id = params[:subscription_id] || params[:questionnaire].try(:[], :subscription_id)
     if subscr_id and subscr_id != 'new'
       @subscription = Subscription.find(subscr_id)
-      unless @subscription && logged_in_person.permitted?(@subscription, "create_questionnaires")
+      unless @subscription && (@subscription == @questionnaire.subscription || logged_in_person.permitted?(@subscription, "create_questionnaires"))
         redirect_to :action => "index"
         return
       end

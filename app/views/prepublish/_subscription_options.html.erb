@@ -4,6 +4,8 @@
       <%= f.radio_button "subscription_id", subscr.id %>
       <% if subscr.expired? -%>
         <%= f.label "subscription_id", "Reactivate my subscription \"#{subscr.name}\"", :value => subscr.id %>
+      <% elsif subscr == @questionnaire.subscription -%>
+        <%= f.label "subscription_id", "Continue using \"#{subscr.name}\"", :value => subscr.id %>
       <% else -%>
         <%= f.label "subscription_id", "Use my subscription \"#{subscr.name}\"", :value => subscr.id %>
       <% end -%>
