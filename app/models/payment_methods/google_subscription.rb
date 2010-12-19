@@ -49,7 +49,14 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
       item.name = "#{subscription.name} payment"
       item.unit_price = amount
       item.quantity = 1
+      item.private_data = shopping_cart_item_private_data
     end
+  end
+  
+  def shopping_cart_item_private_data
+    { :product => "journey", 
+      :subscription_id => subscription.id, 
+      :plan_id => subscription.subscription_plan.id }
   end
   
   def request_payment_inner(amount)
@@ -68,9 +75,7 @@ class PaymentMethods::GoogleSubscription < ActiveRecord::Base
     checkout_cmd.shopping_cart.create_item do |item|
       item.name = subscription.name
       item.quantity = 1
-      item.private_data = { :product => "journey", 
-                            :subscription_id => subscription.id, 
-                            :plan_id => subscription.subscription_plan.id }
+      item.private_data = shopping_cart_item_private_data
       
       if subscription.forever?
         item.unit_price = subscription.subscription_plan.price
