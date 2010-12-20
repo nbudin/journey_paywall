@@ -5,7 +5,8 @@ class SubscriptionsController < ApplicationController
   before_filter :check_subscription_admin, :only => ['all']
   before_filter :get_plans
   before_filter :set_globalnav_links
-  rest_permissions
+  rest_edit_permissions
+  require_permission "create_questionnaires", :only => [:show]
   
   def index
     if logged_in?
