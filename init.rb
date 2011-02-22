@@ -7,9 +7,11 @@ require 'yaml'
 require 'google4r/checkout'
 
 Journey::QuestionnaireExtensions.register_extension(JourneyPaywall::QuestionnaireExtensions)
-Journey::UserOptions.add_logged_out_option("Subscribe", {:controller => "subscriptions", :action => "index"})
-Journey::UserOptions.add_logged_in_option("Subscription", {:controller => "subscriptions", :action => "index"})
 Journey::SiteOptions.prepublish_url_options = { :controller => "prepublish", :action => "index" }
+
+Journey::UserOptions.hook do |nb, controller| 
+  nb.nav_item((controller.logged_in? ? "Subscription" : "Subscribe"), {:controller => "subscriptions", :action => "index"})
+end
 
 begin
   Journey::Dashboard.add_dashbox("subscriptions/dashbox", :right)
