@@ -10,7 +10,6 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nat Budin"]
   s.date = %q{2011-02-28}
-  s.description = %q{TODO: longer description of your gem}
   s.email = %q{natbudin@gmail.com}
   s.extra_rdoc_files = [
     "README"
@@ -65,6 +64,7 @@ Gem::Specification.new do |s|
     "db/migrate/20100221150000_add_startup_cost.rb",
     "init.rb",
     "install.rb",
+    "journey_paywall.gemspec",
     "lib/journey_paywall.rb",
     "lib/paywall_helpers.rb",
     "rails/init.rb",
@@ -78,10 +78,10 @@ Gem::Specification.new do |s|
     "uninstall.rb"
   ]
   s.homepage = %q{http://github.com/nbudin/journey_paywall}
-  s.licenses = ["MIT"]
+  s.licenses = ["All rights reserved"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.5.0}
-  s.summary = %q{TODO: one-line summary of your gem}
+  s.summary = %q{Paid subscriptions for Journey}
   s.test_files = [
     "test/functional/payment_notification_controller_test.rb",
     "test/journey_paywall_test.rb",

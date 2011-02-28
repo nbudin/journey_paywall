@@ -14,9 +14,8 @@ Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "journey_paywall"
   gem.homepage = "http://github.com/nbudin/journey_paywall"
-  gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.license = "All rights reserved"
+  gem.summary = %Q{Paid subscriptions for Journey}
   gem.email = "natbudin@gmail.com"
   gem.authors = ["Nat Budin"]
   # Include your dependencies below. Runtime dependencies are required when using your gem,
