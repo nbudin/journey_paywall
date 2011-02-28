@@ -1,0 +1,28 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activerecord (2.3.5)
+      activesupport (= 2.3.5)
+    activesupport (2.3.5)
+    git (1.2.5)
+    google4r-checkout (1.1.beta2)
+      money (>= 2.3.0)
+    jeweler (1.5.2)
+      bundler (~> 1.0.0)
+      git (>= 1.2.5)
+      rake
+    money (3.1.5)
+    rake (0.8.7)
+    rcov (0.9.9)
+    shoulda (2.11.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activerecord (= 2.3.5)
+  bundler (~> 1.0.0)
+  google4r-checkout (= 1.1.beta2)
+  jeweler (~> 1.5.2)
+  rcov
+  shoulda
