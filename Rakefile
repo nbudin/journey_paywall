@@ -50,3 +50,9 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+task :push_gem => :build do
+  version = File.read('VERSION').strip
+  `scp pkg/journey_paywall-#{version}.gem lome.dreamhost.com:gems.sugarpond.net/gems/`
+  `ssh lome.dreamhost.com gem generate_index -d gems.sugarpond.net/`
+end
