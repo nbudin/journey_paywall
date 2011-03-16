@@ -30,3 +30,5 @@ namespace :journey_paywall do
     end
   end
 end
+
+task :cron => ['journey_paywall:charge_subscriptions']

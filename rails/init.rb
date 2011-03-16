@@ -20,8 +20,14 @@ rescue
 end
 
 yamlpath = "#{RAILS_ROOT}/config/journey_paywall.yml"
-begin
+if ENV['GOOGLE_CHECKOUT_MERCHANT_ID'] && ENV['GOOGLE_CHECKOUT_MERCHANT_KEY']
+  JourneyPaywall.configuration = {
+    'merchant_id' => ENV["GOOGLE_CHECKOUT_MERCHANT_ID"],
+    'merchant_key' => ENV["GOOGLE_CHECKOUT_MERCHANT_KEY"],
+    'use_sandbox' => ENV["GOOGLE_CHECKOUT_USE_SANDBOX"]
+  }
+elsif File.exist?(yamlpath)
   JourneyPaywall.configuration = YAML.load_file(yamlpath)
-rescue
-  puts "WARNING: Couldn't load #{yamlpath} file.  The Google Checkout integration will not work."
+else
+  puts "WARNING: Couldn't find GOOGLE_CHECKOUT env variables or #{yamlpath} file.  The Google Checkout integration will not work."
 end
