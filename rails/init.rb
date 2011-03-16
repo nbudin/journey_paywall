@@ -25,7 +25,7 @@ if ENV['GOOGLE_CHECKOUT_MERCHANT_ID'] && ENV['GOOGLE_CHECKOUT_MERCHANT_KEY']
     'google' => {
       'merchant_id' => ENV["GOOGLE_CHECKOUT_MERCHANT_ID"],
       'merchant_key' => ENV["GOOGLE_CHECKOUT_MERCHANT_KEY"],
-      'use_sandbox' => ENV["GOOGLE_CHECKOUT_USE_SANDBOX"]
+      'use_sandbox' => ENV["GOOGLE_CHECKOUT_USE_SANDBOX"] || false
     }
   }
 elsif File.exist?(yamlpath)
