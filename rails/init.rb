@@ -22,9 +22,11 @@ end
 yamlpath = "#{RAILS_ROOT}/config/journey_paywall.yml"
 if ENV['GOOGLE_CHECKOUT_MERCHANT_ID'] && ENV['GOOGLE_CHECKOUT_MERCHANT_KEY']
   JourneyPaywall.configuration = {
-    'merchant_id' => ENV["GOOGLE_CHECKOUT_MERCHANT_ID"],
-    'merchant_key' => ENV["GOOGLE_CHECKOUT_MERCHANT_KEY"],
-    'use_sandbox' => ENV["GOOGLE_CHECKOUT_USE_SANDBOX"]
+    'google' => {
+      'merchant_id' => ENV["GOOGLE_CHECKOUT_MERCHANT_ID"],
+      'merchant_key' => ENV["GOOGLE_CHECKOUT_MERCHANT_KEY"],
+      'use_sandbox' => ENV["GOOGLE_CHECKOUT_USE_SANDBOX"]
+    }
   }
 elsif File.exist?(yamlpath)
   JourneyPaywall.configuration = YAML.load_file(yamlpath)
