@@ -18,14 +18,18 @@ namespace :journey_paywall do
   
   desc "attempt to charge all subscriptions for which payment is due"
   task :charge_subscriptions => :environment do
+    logger = Logger.new(STDERR)
     Subscription.active.all.each do |s|
       begin
         if s.expired? and s.payment_method
           s.payment_method.request_payment
         end
+      rescue Google4R::Checkout::GoogleCheckoutError => e
+        logger.error "Google Checkout error while requesting payment for #{s.sid}"
+        logger.error "#{e.message}"
       rescue Exception => e
-        $stderr.puts "Error while requesting payment for #{s.sid}:"
-        $stderr.puts e
+        logger.error "Error while requesting payment for #{s.sid}"
+        logger.error e
       end
     end
   end
