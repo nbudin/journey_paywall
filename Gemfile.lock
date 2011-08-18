@@ -20,7 +20,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord (= 2.3.5)
+  activerecord (~> 2.3.5)
   bundler (~> 1.0.0)
   google4r-checkout (= 1.1.beta2)
   jeweler (~> 1.5.2)

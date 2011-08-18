@@ -3,7 +3,7 @@ source "http://rubygems.org"
 # Example:
 #   gem "activesupport", ">= 2.3.5"
 
-gem 'activerecord', '2.3.5'
+gem 'activerecord', '~> 2.3.5'
 gem "google4r-checkout", "1.1.beta2"
 
 # Add dependencies to develop your gem here.
