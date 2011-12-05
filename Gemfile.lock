@@ -1,18 +1,23 @@
+PATH
+  remote: .
+  specs:
+    journey_paywall (1.0.6)
+      activerecord (~> 2.3.5)
+      google4r-checkout (= 1.1.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
-    activerecord (2.3.5)
-      activesupport (= 2.3.5)
-    activesupport (2.3.5)
-    git (1.2.5)
-    google4r-checkout (1.1.beta2)
+    activerecord (2.3.14)
+      activesupport (= 2.3.14)
+    activesupport (2.3.14)
+    google4r-checkout (1.1.0)
       money (>= 2.3.0)
-    jeweler (1.5.2)
-      bundler (~> 1.0.0)
-      git (>= 1.2.5)
-      rake
-    money (3.1.5)
-    rake (0.8.7)
+    i18n (0.6.0)
+    json (1.6.3)
+    money (4.0.1)
+      i18n (~> 0.4)
+      json
     rcov (0.9.9)
     shoulda (2.11.3)
 
@@ -20,9 +25,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord (~> 2.3.5)
-  bundler (~> 1.0.0)
-  google4r-checkout (= 1.1.beta2)
-  jeweler (~> 1.5.2)
+  journey_paywall!
   rcov
   shoulda
