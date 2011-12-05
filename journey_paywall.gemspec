@@ -4,8 +4,8 @@ Gem::Specification.new do |gem|
 
   gem.authors       = ["Nat Budin"]
   gem.email         = ["natbudin@gmail.com"]
-  gem.description   = %q{Paid subscriptions for Journey}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.summary       = %q{Paid subscriptions for Journey}
+  gem.description   = %q{Adds support for subscriptions to Journey.  Subscriptions require monthly payment in order to publish surveys.}
   gem.homepage      = "http://journeysurveys.com"
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
