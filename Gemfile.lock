@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    journey_paywall (1.0.8)
+    journey_paywall (1.0.9)
       activerecord (~> 2.3.5)
-      google4r-checkout (= 1.1.0)
+      google4r-checkout (~> 1.1.0)
 
 GEM
   remote: http://rubygems.org/
