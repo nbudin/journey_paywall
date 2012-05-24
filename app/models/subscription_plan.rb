@@ -87,6 +87,8 @@ class SubscriptionPlan < ActiveRecord::Base
   end
     
   def add_grace_period(date)
+    return date unless grace_period
+    
     date + grace_period.days
   end
   

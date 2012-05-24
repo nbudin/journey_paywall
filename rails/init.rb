@@ -10,7 +10,7 @@ Journey::QuestionnaireExtensions.register_extension(JourneyPaywall::Questionnair
 Journey::SiteOptions.prepublish_url_options = { :controller => "prepublish", :action => "index" }
 
 Journey::UserOptions.hook do |nb, controller| 
-  nb.nav_item((controller.logged_in? ? "Subscription" : "Subscribe"), {:controller => "subscriptions", :action => "index"})
+  nb.nav_item((controller.logged_in? ? "Subscription" : "Subscribe"), {:controller => "/subscriptions", :action => "index"})
 end
 
 begin

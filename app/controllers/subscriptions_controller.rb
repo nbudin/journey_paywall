@@ -107,10 +107,11 @@ class SubscriptionsController < ApplicationController
       uri.query = Rack::Utils.build_query(Rack::Utils.parse_query(uri.query).update(:subscription_id => @subscription.id))
       finished_url = uri.to_s
 
+      @subscription.grant(@person)
+      
       if params[:payment_method] == "google"
         @subscription.payment_method = PaymentMethods::GoogleSubscription.create
         @subscription.save
-        @subscription.grant(@person)
 
         redirect_url = @subscription.payment_method.initiate(
           :message => "Thanks for choosing Journey!  Your subscription is being set up.  "+
