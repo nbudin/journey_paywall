@@ -1,4 +1,25 @@
 module SubscriptionsHelper
+  def product_ad(product)
+    concat(content_tag(:div, :class => "plan") do
+      html = content_tag(:h3, product.name)
+      
+      html << content_tag(:ul, :class => "limits") do
+        content_tag(:li, product_open_time(product)) +
+        content_tag(:li, responses_limit(product))
+      end
+      
+      html << content_tag(:div, :class => "price") do
+        product.price.format + 
+        content_tag(:ul, :class => "extensions") do
+          content_tag(:li, product_extra_time_pricing(product)) +
+          content_tag(:li, product_extra_responses_pricing(product))
+        end
+      end
+      
+      html << yield
+    end)
+  end
+
   def subscription_plan_ad(plan)
     concat(content_tag(:div, :class => "plan") do
       html = content_tag(:h3, plan.name)

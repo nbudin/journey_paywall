@@ -15,7 +15,7 @@ module JourneyPaywall
     def self.included(base)
       base.class_eval do
         belongs_to :subscription
-        validate :check_subscription_limits
+        has_many :orders
         
         add_creator_warning_hook(lambda do |person|
           subscrs = Subscription.find_all_by_person(person)
@@ -56,6 +56,18 @@ module JourneyPaywall
       if options[:skip_save] or save
         return self.subscription
       end
+    end
+    
+    def total_paid_days
+      Order.total_days(orders.paid)
+    end
+    
+    def total_paid_responses
+      Order.total_responses(orders.paid)
+    end
+    
+    def paid_days_end_at
+      Order.days_end_at(orders.paid)
     end
 
     private

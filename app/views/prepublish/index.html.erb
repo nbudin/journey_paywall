@@ -38,6 +38,8 @@
       <% end -%>
     <% else -%>
       <p>Great!  We just want to check how you'd like to pay for this survey.  Here are your options:</p>
+      <%= render :partial => "product_options", :locals => { :f => f } %>
+
       <ul style="list-style-type: none;">
         <%= render :partial => "subscription_options", :locals => { :f => f } %>
       </ul>    

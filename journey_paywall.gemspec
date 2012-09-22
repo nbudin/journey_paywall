@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |gem|
-  gem.version       = "1.0.10"
+  gem.version       = "1.1.0.pre"
 
   gem.authors       = ["Nat Budin"]
   gem.email         = ["natbudin@gmail.com"]
-  gem.summary       = %q{Paid subscriptions for Journey}
-  gem.description   = %q{Adds support for subscriptions to Journey.  Subscriptions require monthly payment in order to publish surveys.}
+  gem.summary       = %q{Paid surveys for Journey}
+  gem.description   = %q{Adds support for payments to Journey including monthly subscriptions and a la carte pricing.}
   gem.homepage      = "http://journeysurveys.com"
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }

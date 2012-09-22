@@ -1,0 +1,13 @@
+<div class="plans">
+  <% @products.each do |product| -%>
+    <% product_ad(product) do -%>
+      <% form_for "order", :url => orders_url do |f| %>
+        <%= f.hidden_field "product_id", :value => product.id %>
+        <%= hidden_field_tag "return_to", url_for(:action => "set_product", :only_path => false) %>
+        <button class="signup">
+          <h4>Choose <%= product.name %></h4>
+        </button>
+      <% end -%>
+    <% end -%>
+  <% end -%>
+</div>

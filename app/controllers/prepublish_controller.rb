@@ -5,6 +5,7 @@ class PrepublishController < ApplicationController
   
   def index
     @subscriptions = Subscription.find_all_by_person(logged_in_person)
+    @products = Product.all(:order => :cents)
     
     current = @questionnaire.subscription
     @subscriptions.unshift(@questionnaire.subscription) if (current && !@subscriptions.include?(current))
